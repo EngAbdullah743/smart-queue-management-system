@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Queue - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="Login.js">
+</head>
+<style>
+    /* Reset and base styles */
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+        
+body {
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        line-height: 1.5;
+        color: #333;
+        background-color: #f9fafb;
+        min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        /* Header */
+        header {
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 0;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .logo-blue {
+            color: #2563eb;
+        }
+        
+        .logo-amber {
+            color: #f59e0b;
+        }
+        
+        nav ul {
+            display: none;
+        }
+        
+        @media (min-width: 768px) {
+            nav ul {
+                display: flex;
+                list-style: none;
+                gap: 1.5rem;
+            }
+        }
+        
+        .nav-link {
+            color: #4b5563;
+            transition: color 0.2s;
+        }
+        
+        .nav-link:hover {
+            color: #2563eb;
+        }
+        
+        /* Main */
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .login-container {
+            background-color: white;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+            max-width: 28rem;
+            width: 100%;
+            padding: 2rem;
+            border: 1px solid #e5e7eb;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            background-color: #f3f4f6;
+            border-radius: 0.5rem;
+            padding: 0.25rem;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: #4b5563;
+        }
+        
+        .tab.active {
+            background-color: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            color: #2563eb;
+        }
+        
+        /* User Type Selection */
+        .user-types {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .user-type {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            background-color: #f3f4f6;
+            color: #4b5563;
+            border: none;
+        }
+        
+        .user-type.active {
+            background-color: #2563eb;
+            color: white;
+        }
+        
+        /* Form */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        .form-input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            cursor: pointer;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+        
+        .form-select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+        
+        .form-checkbox {
+            width: 1rem;
+            height: 1rem;
+            color: #2563eb;
+            border: 1px solid #d1d5db;
+            border-radius: 0.25rem;
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-check-label {
+            margin-left: 0.5rem;
+            font-size: 0.875rem;
+            color: #4b5563;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .forgot-password {
+            font-size: 0.875rem;
+            color: #2563eb;
+            transition: color 0.2s;
+        }
+        
+        .forgot-password:hover {
+            color: #1d4ed8;
+        }
+        
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        /* Social Login */
+        .divider {
+            position: relative;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+        
+        .divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #e5e7eb;
+            z-index: 1;
+        }
+        
+        .divider-text {
+            position: relative;
+            display: inline-block;
+            padding: 0 0.5rem;
+            background-color: white;
+            font-size: 0.875rem;
+            color: #6b7280;
+            z-index: 2;
+        }
+        
+        .social-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        
+        .social-btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            background-color: white;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4b5563;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        
+        .social-btn:hover {
+            background-color: #f9fafb;
+        }
+        
+        .social-icon {
+            margin-right: 0.5rem;
+        }
+        
+        .google-icon {
+            color: #4285F4;
+        }
+        
+        .facebook-icon {
+            color: #1877F2;
+        }
+        
+        /* Footer bottom section */
+        /* Dark Footer Styles - Force correct layout and styling */
+
+       footer {
+        background-color: #1e293b;
+        padding-top: 3rem;
+        padding-bottom: 2rem;
+        margin-top: 4rem;
+        color: #ffffff;
+            
+        }
+
+        /* Ensure the description is properly styled */
+        .footer-description {
+            color: #94a3b8;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        @media (min-width: 768px) {
+            .footer-bottom {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+        
+        .copyright {
+            color: #94a3b8;
+            margin-bottom: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .copyright {
+                margin-bottom: 0;
+            }
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .footer-link {
+            color: #94a3b8;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        
+        .footer-link:hover {
+            color: #ffffff;
+        }
+        
+
+        .slider-container {
+            scroll-behavior: smooth;     /* Smooth scrolling for the slider */
+        }
+
+
+        .social-links-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 3rem;
+    }
+        .social-links {
+    display: flex !important;
+    gap: 1rem !important;
+    justify-content: center !important;
+}
+
+.social-link {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    border-radius: 9999px !important;
+    background-color: #334155 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #ffffff !important;
+    transition: all 0.3s !important;
+}
+
+.social-link:hover {
+    background-color: #2563eb !important;
+    color: white !important;
+}
+@media (min-width: 768px) {
+    .footer-content {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+    }
+    
+    .footer-column {
+        margin-bottom: 0 !important;
+        margin-top: -15px;
+        gap: 1rem;
+        
+    }
+    
+    .footer-logo-column {
+        flex: 1 !important;
+        align-items: flex-start !important;
+    }
+    
+    .footer-links-column {
+        flex: 1 !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+    
+    .footer-contact-column {
+        flex: 1 !important;
+        display: flex !important;
+        justify-content: flex-end !important;
+    }
+}
+/* Fix logo styling */
+.footer-logo {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.logo-text {
+    font-weight: 700 !important;
+    font-size: 1.5rem !important;
+}
+
+.logo-blue {
+    color: #2563eb !important;
+}
+
+.logo-amber {
+    color: #f59e0b !important;
+}
+
+/* Fix navigation links styling */
+.footer-nav-list {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.footer-nav-list li {
+    margin-bottom: 1rem !important;
+    text-align: center !important;
+}
+
+@media (min-width: 768px) {
+    .footer-nav-list li {
+        text-align: center !important;
+    }
+}
+
+.footer-nav-link {
+    color: #94a3b8;
+        transition: all 0.2s;
+        text-decoration: none;
+}
+
+.footer-nav-link:hover {
+    color: #ffffff !important;
+}
+
+/* Fix contact items styling */
+.contact-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+    margin-top: -100px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    color: #94a3b8;
+    text-decoration: none;
+}
+
+.contact-icon {
+    color: #2563eb !important;
+    width: 1.25rem !important;
+    margin-right: 0.5rem !important;
+}
+
+/* Fix footer bottom section */
+.footer-bottom {
+    padding-top: 2rem !important;
+    margin-top: 2rem !important;
+    border-top: 1px solid #334155 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+@media (min-width: 768px) {
+    .footer-bottom {
+        flex-direction: row !important;
+        align-items: center !important;
+    }
+}
+
+.copyright {
+    color: #94a3b8 !important;
+    margin-bottom: 1rem !important;
+}
+
+@media (min-width: 768px) {
+    .copyright {
+        margin-bottom: 80 !important;
+    }
+}
+
+.footer-links {
+    display: flex !important;
+    gap: 1.5rem !important;
+}
+
+.footer-link {
+    color: #94a3b8 !important;
+    transition: all 0.2s !important;
+    text-decoration: none !important;
+}
+
+.footer-link:hover {
+    color: #ffffff !important;
+}
+
+.slider-container {
+            scroll-behavior: smooth;     /* Smooth scrolling for the slider */
+        }
+/* Ensure bullets are removed from footer lists if present */
+ul {
+    list-style-type: none !important;
+}
+
+/* Fix for any display issues */
+* {
+    box-sizing: border-box !important;
+}
+
+/* Reset any unwanted styling that might be coming from elsewhere */
+.footer-content a,
+.footer-content li,
+.footer-content ul {
+    text-decoration: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.footer-content li {
+    margin-bottom: 1rem !important;
+}
+
+/* Ensure SmartQueue logo has correct styling in footer */
+.footer-logo-column .logo-text {
+    display: inline-block !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+}
+</style>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="guest.html" class="logo">
+                <span class="logo-text"><span class="logo-blue">Smart</span><span class="logo-amber">Queue</span></span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="guest.html" class="nav-link">Home</a></li>
+                    <li><a href="guest.html#features" class="nav-link">Features</a></li>
+                    <li><a href="guest.html#about-us" class="nav-link">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="login-container">
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active" id="login-tab">Sign In</div>
+                <div class="tab" id="register-tab">Register</div>
+            </div>
+
+            <!-- User Type Selection -->
+            <div class="user-types">
+                <button id="customer-type" class="user-type active" >Customer</button>
+                <button id="staff-type" class="user-type" >Staff</button>
+                <button id="admin-type" class="user-type" >Admin</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="active-form">
+                <div class="form-group">
+                    <label for="login-email" class="form-label">Email</label>
+                    <div class="input-group">
+                        <i class="input-icon fas fa-envelope"></i>
+                        <input type="email" id="login-email" class="form-input" placeholder="you@example.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="login-password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <i class="input-icon fas fa-lock"></i>
+                        <input type="password" id="login-password" class="form-input" placeholder="••••••••" required>
+                        <div class="password-toggle" id="login-password-toggle">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <div class="form-check">
+                        <input type="checkbox" id="remember" class="form-checkbox">
+                        <label for="remember" class="form-check-label">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn">Sign in</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" style="display: none;">
+                <div class="form-group">
+                    <label for="name" class="form-label">Full Name</label>
+                    <div class="input-group">
+                        <i class="input-icon fas fa-user"></i>
+                        <input type="text" id="name" class="form-input" placeholder="John Doe" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="register-email" class="form-label">Email</label>
+                    <div class="input-group">
+                        <i class="input-icon fas fa-envelope"></i>
+                        <input type="email" id="register-email" class="form-input" placeholder="you@example.com" required>
+                    </div>
+                </div>
+                
+                <!-- Business fields (hidden by default) -->
+                <div id="business-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="business-name" class="form-label">Business Name</label>
+                        <input type="text" id="business-name" class="form-input" placeholder="Your Business Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="business-type" class="form-label">Business Type</label>
+                        <select id="business-type-select" class="form-select" required>
+                            <option value="">Select a business type</option>
+                            <option value="clinic">Clinic</option>
+                            <option value="salon">Salon</option>
+                            <option value="bank">Bank</option>
+                            <option value="restaurant">Restaurant</option>
+                            <option value="government">Government Office</option>
+                            <option value="education">University / College</option>
+                            <option value="pharmacy">Pharmacy</option>
+                            <option value="auto">Car Service / Auto Repair</option>
+                            <option value="event">Event / Conference</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="tel" id="phone" class="form-input" placeholder="+1 (234) 567-8900" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <i class="input-icon fas fa-lock"></i>
+                        <input type="password" id="register-password" class="form-input" placeholder="••••••••" required>
+                        <div class="password-toggle" id="register-password-toggle">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password" class="form-label">Confirm Password</label>
+                    <div class="input-group">
+                        <i class="input-icon fas fa-lock"></i>
+                        <input type="password" id="confirm-password" class="form-input" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-check">
+                        <input type="checkbox" id="terms" class="form-checkbox" required>
+                        <label for="terms" class="form-check-label">
+                            I agree to the <a href="policy-pages.html#terms-of-service" class="forgot-password">Terms of Service</a> and <a href="policy-pages.html#privacy-policy" class="forgot-password">Privacy Policy</a>
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Create Account</button>
+            </form>
+
+            <!-- Social Login -->
+            <div class="divider">
+                <span class="divider-text">Or continue with</span>
+            </div>
+            <div class="social-buttons">
+                <button class="social-btn">
+                    <i class="fab fa-google social-icon google-icon"></i>
+                    <span>Google</span>
+                </button>
+                <button class="social-btn">
+                    <i class="fab fa-facebook-f social-icon facebook-icon"></i>
+                    <span>Facebook</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+        <!-- Top section - Description and social links -->
+        <p class="footer-description text-center">Making waiting a thing of the past with our innovative queue management solution.</p>
+        
+        <div class="social-links-container">
+            <div class="social-links">
+                <a href="https://www.facebook.com/SmartQueueOfficial" target="_blank" rel="noopener" aria-label="Facebook" class="social-link">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                
+                <a href="https://www.twitter.com/SmartQueueOfficial" target="_blank" rel="noopener" aria-label="X" class="social-link">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                
+                <a href="https://www.instagram.com/SmartQueueOfficial" target="_blank" rel="noopener" aria-label="Instagram" class="social-link">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                
+                <a href="https://www.linkedin.com/company/SmartQueueOfficial" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-link">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main footer content - Three columns -->
+        <div class="footer-content">
+            <!-- Left column - Logo -->
+            <div class="footer-column footer-logo-column">
+                <div class="footer-logo">
+                    <span class="logo-text">
+                        <a href="guest.html">
+                        <span class="logo-blue">Smart</span><span class="logo-amber">Queue</span>
+                        </a></span>
+                </div>
+            </div>
+            
+            <!-- Middle column - Links -->
+            <div class="footer-column footer-links-column">
+                <ul class="footer-nav-list">
+                    <li><a href="guest.html#about-us" class="footer-nav-link">About Us</a></li>
+                    <li><a href="guest.html#features" class="footer-nav-link">Features</a></li>
+                    <li><a href="guest.html#faq" class="footer-nav-link">FAQ</a></li>
+                </ul>
+            </div>
+            
+            <!-- Right column - Contact -->
+            <div class="footer-column footer-contact-column">
+                <div class="contact-list">
+                    <a href="mailto:support@smartqueue.com" class="contact-item">
+                        <i class="fas fa-envelope contact-icon"></i>
+                        <span>support@smartqueue.com</span>
+                    </a>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-phone contact-icon"></i>
+                        <span>+1 (234) 567-8900</span>
+                    </div>
+                    
+                    <a href="https://www.google.com/maps/place/%D8%AC%D8%A7%D9%85%D8%B9%D8%A9+%D8%A3%D8%B3%D9%83%D8%AF%D8%A7%D8%B1%E2%80%AD/@41.0249642,29.0388276,17z/data=!3m1!4b1!4m6!3m5!1s0x14cab7e4b9b96af1:0x78ef20ea9ab0de2a!8m2!3d41.0249642!4d29.0388276!16s%2Fg%2F15dqchld?entry=ttu&g_ep=EgoyMDI1MDQyMy4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="contact-item">
+                        <i class="fas fa-map-marker-alt contact-icon"></i>
+                        <span>Smart Queue HQ</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom section - Copyright and links -->
+        <div class="footer-bottom">
+            <div class="copyright">
+                &copy; 2025 Smart Queue. All rights reserved.
+            </div>
+            <div class="footer-links">
+                <a href="policy-pages.html#privacy-policy" class="footer-link policy-link" data-policy="privacy-policy">Privacy Policy</a>
+                <a href="policy-pages.html#terms-of-service" class="footer-link policy-link" data-policy="terms-of-service">Terms of Service</a>
+                <a href="policy-pages.html#cookie-policy" class="footer-link policy-link" data-policy="cookie-policy">Cookie Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
