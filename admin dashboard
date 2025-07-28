@@ -1,0 +1,2811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Queue - Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.js">
+</head>
+<style>
+     /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            background-color: #f9fafb;
+            min-height: 100vh;
+            display: flex;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        /* Layout */
+        .min-h-screen {
+            min-height: 100vh;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .flex-col {
+            flex-direction: column;
+        }
+        
+        .flex-1 {
+            flex: 1;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 4rem;
+            background-color: white;
+            border-right: 1px solid #e5e7eb;
+            height: 100vh;
+            position: fixed;
+            z-index: 10;
+        }
+        
+        @media (min-width: 768px) {
+            .sidebar {
+                width: 16rem;
+            }
+        }
+        
+        .sidebar-fixed {
+            height: 100%;
+            width: inherit;
+        }
+        
+        .sidebar-logo {
+            height: 4rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .sidebar-logo {
+                justify-content: flex-start;
+            }
+        }
+        
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .logo-text-short {
+            display: block;
+        }
+        
+        .logo-text-full {
+            display: none;
+        }
+        
+        @media (min-width: 768px) {
+            .logo-text-short {
+                display: none;
+            }
+            
+            .logo-text-full {
+                display: block;
+            }
+        }
+        
+        .logo-blue {
+            color: #2563eb;
+        }
+        
+        .logo-amber {
+            color: #f59e0b;
+        }
+        
+        .sidebar-nav {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 4rem);
+        }
+        
+        .nav-category {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        @media (min-width: 768px) {
+            .nav-category {
+                display: block;
+            }
+        }
+        
+        .nav-list {
+            list-style: none;
+            margin-bottom: 1rem;
+        }
+        
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            color: #4b5563;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .nav-link:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .nav-link.active {
+            background-color: #eff6ff;
+            color: #2563eb;
+        }
+        
+        .nav-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            min-width: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nav-text {
+            margin-left: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: none;
+        }
+        
+        @media (min-width: 768px) {
+            .nav-text {
+                display: block;
+            }
+        }
+        
+        .logout-container {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 4rem;
+            overflow-x: hidden;
+        }
+        
+        @media (min-width: 768px) {
+            .main-content {
+                margin-left: 16rem;
+            }
+        }
+        
+        .content-container {
+            padding: 1.5rem 1rem;
+            max-width: 1536px;
+            margin: 0 auto;
+        }
+        
+        @media (min-width: 640px) {
+            .content-container {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .content-container {
+                padding: 2rem;
+            }
+        }
+        
+        /* Dashboard Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+        }
+        
+        .time-range-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .time-select {
+            background-color: white;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            padding: 0.5rem 0.75rem 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            color: #4b5563;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .refresh-btn {
+            background-color: white;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            color: #4b5563;
+            cursor: pointer;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (min-width: 640px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .stats-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stats-body {
+            padding: 1.25rem;
+        }
+        
+        .stats-icon-wrapper {
+            display: flex;
+            align-items: center;
+        }
+        
+        .stats-icon {
+            flex-shrink: 0;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.25rem;
+        }
+        
+        .stats-icon.blue {
+            background-color: #dbeafe;
+        }
+        
+        .stats-icon.blue i {
+            color: #2563eb;
+        }
+        
+        .stats-icon.green {
+            background-color: #d1fae5;
+        }
+        
+        .stats-icon.green i {
+            color: #10b981;
+        }
+        
+        .stats-icon.purple {
+            background-color: #ede9fe;
+        }
+        
+        .stats-icon.purple i {
+            color: #8b5cf6;
+        }
+        
+        .stats-content {
+            width: 100%;
+            flex: 1;
+        }
+        
+        .stats-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+        }
+        
+        .stats-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+        }
+        
+        .stats-footer {
+            background-color: #f9fafb;
+            padding: 0.75rem 1.25rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .stats-footer-text {
+            font-size: 0.875rem;
+        }
+        
+        .stats-footer-link {
+            color: #2563eb;
+            font-weight: 500;
+        }
+        
+        .stats-footer-link:hover {
+            color: #1d4ed8;
+        }
+        
+        /* Charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (min-width: 1024px) {
+            .charts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .chart-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+        
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 15rem;
+        }
+        
+              /* Charts */
+              .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .charts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .chart-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: 
+#111827;
+            margin-bottom: 1rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 15rem;
+        }
+
+        /* Bar Chart */
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            height: 100%;
+            padding: 0 0.5rem;
+        }
+
+        .bar {
+            flex: 1;
+            margin: 0 0.5rem;
+            background-color: 
+#2563eb;
+            border-radius: 0.25rem 0.25rem 0 0;
+            transition: height 0.3s ease;
+        }
+        
+        /* Pie Chart */
+        .pie-chart {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .pie {
+            position: relative;
+            width: 8rem;
+            height: 8rem;
+        }
+        
+        .pie-segment {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            clip: rect(0, 8rem, 8rem, 4rem);
+        }
+        
+        .pie-segment-1 {
+            background-color: #2563eb;
+            transform: rotate(0deg);
+        }
+        
+        .pie-segment-2 {
+            background-color: #60a5fa;
+            transform: rotate(90deg);
+        }
+        
+        .pie-segment-3 {
+            background-color: #93c5fd;
+            transform: rotate(180deg);
+        }
+        
+        .pie-segment-4 {
+            background-color: #bfdbfe;
+            transform: rotate(270deg);
+        }
+        
+        .pie-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4rem;
+            height: 4rem;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Line Chart */
+        .line-chart {
+            position: relative;
+            height: 100%;
+            padding: 0.5rem;
+        }
+        
+        .line-chart svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Recent Activity */
+        .activity-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .activity-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .activity-title {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .activity-item {
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .activity-icon {
+            flex-shrink: 0;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+        }
+        
+        .activity-icon.green {
+            background-color: #d1fae5;
+            color: #10b981;
+        }
+        
+        .activity-icon.blue {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+        
+        .activity-icon.amber {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-text {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .activity-time {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
+        /* Table Styles */
+        .table-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+        }
+        
+        .table-title {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .table-action {
+            display: flex;
+            align-items: center;
+            background-color: #2563eb;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .table-action:hover {
+            background-color: #1d4ed8;
+        }
+        
+        .table-action i {
+            margin-right: 0.5rem;
+        }
+        
+        .overflow-x-auto {
+            overflow-x: auto;
+        }
+        
+        table {
+            min-width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            padding: 0.75rem 1.5rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            background-color: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        td {
+            padding: 1rem 1.5rem;
+            white-space: nowrap;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .td-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .td-text {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.625rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-pill.active {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-pill.inactive {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.125rem;
+        }
+        
+        .action-btn.view {
+            color: #2563eb;
+        }
+        
+        .action-btn.view:hover {
+            color: #1d4ed8;
+        }
+        
+        .action-btn.edit {
+            color: #d97706;
+        }
+        
+        .action-btn.edit:hover {
+            color: #b45309;
+        }
+        
+        .action-btn.delete {
+            color: #ef4444;
+        }
+        
+        .action-btn.delete:hover {
+            color: #dc2626;
+        }
+        
+        /* Business Type Bars */
+        .business-type-bars {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .business-type-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .business-type-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .business-type-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4b5563;
+        }
+        
+        .business-type-value {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .business-type-progress {
+            height: 0.5rem;
+            width: 100%;
+            background-color: #e5e7eb;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        
+        .business-type-fill {
+            height: 100%;
+            background-color: #2563eb;
+            border-radius: 9999px;
+        }
+        
+        /* Activity Overview */
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .activity-stat {
+            background-color: #f3f4f6;
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+        
+        .activity-stat.blue {
+            background-color: #eff6ff;
+        }
+        
+        .activity-stat.green {
+            background-color: #ecfdf5;
+        }
+        
+        .activity-stat.amber {
+            background-color: #fffbeb;
+        }
+        
+        .activity-stat.purple {
+            background-color: #f5f3ff;
+        }
+        
+        .activity-stat-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .activity-stat-icon {
+            font-size: 1.25rem;
+            margin-right: 0.5rem;
+        }
+        
+        .activity-stat-icon.blue {
+            color: #2563eb;
+        }
+        
+        .activity-stat-icon.green {
+            color: #10b981;
+        }
+        
+        .activity-stat-icon.amber {
+            color: #d97706;
+        }
+        
+        .activity-stat-icon.purple {
+            color: #8b5cf6;
+        }
+        
+        .activity-stat-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .activity-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+        }
+        
+        .activity-stat-text {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        
+        /* Customer Satisfaction Gauge */
+        .gauge-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        
+        .gauge {
+            position: relative;
+            width: 10rem;
+            height: 5rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        
+        .gauge-background {
+            position: absolute;
+            width: 10rem;
+            height: 10rem;
+            border: 0.5rem solid #e5e7eb;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            top: 0;
+            box-sizing: border-box;
+        }
+        
+        .gauge-fill {
+            position: absolute;
+            width: 10rem;
+            height: 10rem;
+            border: 0.5rem solid #10b981;
+            border-right-color: transparent;
+            border-bottom-color: transparent;
+            border-left-color: transparent;
+            border-radius: 50%;
+            top: 0;
+            transform-origin: center;
+            transform: rotate(45deg);
+            box-sizing: border-box;
+        }
+        
+        .gauge-cover {
+            position: absolute;
+            width: 7rem;
+            height: 7rem;
+            background-color: white;
+            border-radius: 50%;
+            top: 1.5rem;
+            left: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #10b981;
+        }
+        
+        .gauge-labels {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .gauge-label {
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .gauge-color {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 9999px;
+            margin-right: 0.5rem;
+        }
+        
+        .gauge-color.green {
+            background-color: #10b981;
+        }
+        
+        .gauge-color.amber {
+            background-color: #d97706;
+        }
+        
+        .gauge-color.red {
+            background-color: #ef4444;
+        }
+        
+        /* Settings Forms */
+        .settings-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        
+        .settings-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+        }
+        
+        .settings-title {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .settings-body {
+            padding: 1.5rem;
+        }
+        
+        .settings-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .settings-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .settings-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .settings-item-content h3 {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .settings-item-content p {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 3rem;
+            height: 1.5rem;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e7eb;
+            transition: .4s;
+            border-radius: 9999px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 1.25rem;
+            width: 1.25rem;
+            left: 0.125rem;
+            bottom: 0.125rem;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #2563eb;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(1.5rem);
+        }
+        
+        .settings-select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            background-color: white;
+            font-size: 0.875rem;
+            color: #4b5563;
+        }
+        
+        .settings-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background-color: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .btn-cancel {
+            background-color: white;
+            color: #4b5563;
+            border: 1px solid #d1d5db;
+        }
+        
+        .btn-cancel:hover {
+            background-color: #f9fafb;
+        }
+        
+        .btn-save {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+        }
+        
+        .btn-save:hover {
+            background-color: #1d4ed8;
+        }
+        
+        /* Tabs (hidden by default) */
+        #businesses-tab, #staff-tab, #analytics-tab, #settings-tab {
+            display: none;
+        }
+
+        .slider-container {
+            scroll-behavior: smooth;     /* Smooth scrolling for the slider */
+        }
+
+        /* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: #f9fafb;
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.modal-close {
+    color: #6b7280;
+    font-size: 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.detail-row {
+    display: flex;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 0.75rem;
+}
+
+.detail-row:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.detail-label {
+    flex: 1;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.detail-value {
+    flex: 2;
+    color: #111827;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem;
+    background-color: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.modal-close-btn {
+    padding: 0.5rem 1rem;
+    background-color: #e5e7eb;
+    color: #4b5563;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* Additional styles for the staff modal */
+.password-field {
+    flex: 2;
+    display: flex;
+    align-items: center;
+}
+
+.password-input {
+    flex: 1;
+    padding: 0.375rem 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    color: #111827;
+    background-color: #f9fafb;
+}
+
+.password-toggle {
+    margin-left: 0.5rem;
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.password-toggle:hover {
+    color: #2563eb;
+}
+
+/* Tab content sizing consistency */
+#dashboard-tab, #businesses-tab, #staff-tab, #analytics-tab, #settings-tab {
+    min-height: calc(100vh - 80px); /* Ensures minimum height is consistent across all tabs */
+    width: 100%;
+    padding-bottom: 2rem; /* Add consistent bottom padding */
+}
+
+/* Make settings tab consistent with other tabs */
+#settings-tab .page-title {
+    margin-bottom: 1.5rem; /* Match the spacing in other tabs */
+}
+
+/* Increase the size of the settings card container */
+.settings-card {
+    margin-bottom: 2rem; /* Increased from 1.5rem */
+}
+
+/* Add these styles to ensure the Settings and Dashboard cards have proper spacing */
+.settings-section {
+    padding: 1.25rem 0;
+}
+
+/* Make dashboard activity card bigger */
+.activity-card {
+    margin-bottom: 2rem; /* Consistent with other sections */
+}
+
+/* Make all tabs have consistent display properties */
+#dashboard-tab, #settings-tab {
+    display: block; /* Initially make dashboard visible */
+}
+
+#businesses-tab, #staff-tab, #analytics-tab {
+    display: none; /* Initially hide other tabs */
+}
+
+.boddy {
+      background: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .chart-containerr {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 700px;
+    }
+
+    h4 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .chart-path {
+      width: 100%;
+      height: 300px;
+    }
+
+    .x-dotss {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 10px;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    .bbody {
+      background: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .card {
+      background: #fff;
+      width: 400px;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .circle-container {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 20px auto;
+    }
+
+    .circle-background {
+      stroke: #e0e3eb;
+      fill: none;
+      stroke-width: 15;
+    }
+
+    .circle-progress {
+      stroke: #00b894;
+      fill: none;
+      stroke-width: 15;
+      stroke-linecap: round;
+      stroke-dasharray: 440;
+      stroke-dashoffset: 100; /* control percentage here */
+      transform: rotate(-90deg);
+      transform-origin: center;
+    }
+
+    .percentage {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      font-weight: bold;
+      color: #00b894;
+    }
+
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .satisfied { background: #00b894; }
+    .neutral { background: #e67e22; }
+    .dissatisfied { background: #e74c3c; }
+</style>
+<body>
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-fixed">
+                <div class="sidebar-logo">
+                    <a href="admin.html">
+                    <span class="logo-text logo-text-short"><span class="logo-blue">SQ</span></span>
+                    <span class="logo-text logo-text-full"><span class="logo-blue">Smart</span><span class="logo-amber">Queue</span></span>
+                    </a>
+                </div>
+                
+                <div class="sidebar-nav">
+                    <span class="nav-category">Main</span>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link active" id="dashboard-link">
+                                <div class="nav-icon">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <span class="nav-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" id="businesses-link">
+                                <div class="nav-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <span class="nav-text">Businesses</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" id="staff-link">
+                                <div class="nav-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <span class="nav-text">Staff</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" id="analytics-link">
+                                <div class="nav-icon">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                                <span class="nav-text">Analytics</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" id="settings-link">
+                                <div class="nav-icon">
+                                    <i class="fas fa-cog"></i>
+                                </div>
+                                <span class="nav-text">Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <div class="logout-container">
+                        <a href="#" class="nav-link">
+                            <div class="nav-icon">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </div>
+                            <span class="nav-text">Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Logout Confirmation Popup -->
+<div class="modal-overlay" id="logoutPopup" style="display: none;">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Confirm Logout</h3>
+            <button class="modal-close" onclick="closePopup('logoutPopup')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to log out?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" onclick="logout()">Log Out</button>
+            <button class="btn btn-cancel" onclick="closePopup('logoutPopup')">Cancel</button>
+        </div>
+    </div>
+</div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-container">
+                <!-- Dashboard Tab (default visible) -->
+                <div id="dashboard-tab">
+                    <div class="dashboard-header">
+                        <h1 class="page-title">System Dashboard</h1>
+                        <div class="time-range-selector">
+                            <select class="time-select">
+                                <option value="today">Today</option>
+                                <option value="week" selected>This Week</option>
+                                <option value="month">This Month</option>
+                                <option value="year">This Year</option>
+                            </select>
+                            <button class="refresh-btn">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="stats-grid">
+                        <div class="stats-card">
+                            <div class="stats-body">
+                                <div class="stats-icon-wrapper">
+                                    <div class="stats-icon blue">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="stats-content">
+                                        <dt class="stats-label">Total Businesses</dt>
+                                        <dd class="stats-value">5</dd>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stats-footer">
+                                <div class="stats-footer-text">
+                                    <a href="#" class="stats-footer-link">
+                                        4 active
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stats-card">
+                            <div class="stats-body">
+                                <div class="stats-icon-wrapper">
+                                    <div class="stats-icon green">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="stats-content">
+                                        <dt class="stats-label">Total Staff</dt>
+                                        <dd class="stats-value">5</dd>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stats-footer">
+                                <div class="stats-footer-text">
+                                    <a href="#" class="stats-footer-link">
+                                        4 active
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stats-card">
+                            <div class="stats-body">
+                                <div class="stats-icon-wrapper">
+                                    <div class="stats-icon purple">
+                                        <i class="fas fa-user-plus"></i>
+                                    </div>
+                                    <div class="stats-content">
+                                        <dt class="stats-label">Customers Served</dt>
+                                        <dd class="stats-value">12,678</dd>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stats-footer">
+                                <div class="stats-footer-text">
+                                    <a href="#" class="stats-footer-link">
+                                        Avg. Wait: 18 min
+                                    </a>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="charts-grid">
+                         <!-- Chart 1: System Usage Trend -->
+        <div class="chart-card">
+            <h2 class="chart-title">Customers served ( Last 7 Days)</h2>
+            <div class="chart-container">
+                <div style="position: relative; height: 100%; display: flex; flex-direction: column;">
+                    <!-- Y-axis labels -->
+                        <div style="position: absolute; left: 0; top: 0%; font-size: 12px; color: #6b7280;">300</div>
+                        <div style="position: absolute; left: 0; top: 15%; font-size: 12px; color: #6b7280;">200</div>
+                        <div style="position: absolute; left: 0; top: 30%; font-size: 12px; color: #6b7280;">150</div>
+                        <div style="position: absolute; left: 0; top: 45%; font-size: 12px; color: #6b7280;">100</div>
+                        <div style="position: absolute; left: 0; top: 60%; font-size: 12px; color: #6b7280;">50</div>
+                        <div style="position: absolute; left: 0; top: 75%; font-size: 12px; color: #6b7280;">0</div>
+
+
+                    
+                    <!-- Bar chart with labels -->
+                    <div class="bar-chart" style="height: 85%; margin-top: auto; padding-left: 30px; padding-bottom: 25px;">
+                        <div class="bar" style="height: 45%;" title="Monday"></div>
+                        <div class="bar" style="height: 50%;" title="Theusday"></div>
+                        <div class="bar" style="height: 55%;" title="Wednesday"></div>
+                        <div class="bar" style="height: 60%;" title="Thurstay"></div>
+                        <div class="bar" style="height: 65%;" title="Friday"></div>
+                        <div class="bar" style="height: 70%;" title="Saturday"></div>
+                        <div class="bar" style="height: 75%;" title="Sunday"></div>
+                    </div>
+                    
+                    <!-- X-axis labels -->
+                    <div style="display: flex; justify-content: space-around; padding-left: 30px; margin-top: 5px;">
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">M</div>
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">T</div>
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">W</div>
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">T</div>
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">F</div>
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">S</div>
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">S</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                        <div class="chart-card">
+                            <h2 class="chart-title">Business Type Distribution</h2>
+                            <div class="chart-container">
+                                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                                    <!-- Donut Chart -->
+                                    <div style="position: relative; width: 200px; height: 200px; margin-bottom: 20px;">
+                                        <!-- Donut segments -->
+                                        <svg viewBox="0 0 100 100" style="transform: rotate(-90deg); width: 100%; height: 100%;">
+                                            <!-- Food segment (dark blue) - 25% -->
+                                            <circle r="25" cx="50" cy="50" fill="transparent" 
+                                                   stroke="#000dff" stroke-width="50" stroke-dasharray="39.25 117.75" />
+                                            
+                                            <!-- Retail segment (medium blue) - 25% -->
+                                            <circle r="25" cx="50" cy="50" fill="transparent" 
+                                                   stroke="#0d3968" stroke-width="50" stroke-dasharray="39.25 117.75" stroke-dashoffset="-39.25" />
+                                            
+                                            <!-- Service segment (light blue) - 25% -->
+                                            <circle r="25" cx="50" cy="50" fill="transparent" 
+                                                   stroke="#93c5fd" stroke-width="50" stroke-dasharray="39.25 117.75" stroke-dashoffset="-78.5" />
+                                            
+                                            <!-- Other segment (very light blue) - 25% -->
+                                            <circle r="25" cx="50" cy="50" fill="transparent" 
+                                                   stroke="#0073ff" stroke-width="50" stroke-dasharray="39.25 117.75" stroke-dashoffset="-117.75" />
+                                            
+                                            <!-- Inner white circle to create donut hole -->
+                                            <circle r="25" cx="50" cy="50" fill="white" />
+                                        </svg>
+                                    </div>
+                                    
+                                    <!-- Legend -->
+                                    <div style="display: flex; justify-content: center; gap: 20px;">
+                                        <!-- Food -->
+                                        <div style="display: flex; align-items: center;">
+                                            <div style="width: 16px; height: 16px; background-color: #000dff; margin-right: 8px;"></div>
+                                            <div style="font-size: 14px; color: #111827;">Food</div>
+                                        </div>
+                                        
+                                        <!-- Retail -->
+                                        <div style="display: flex; align-items: center;">
+                                            <div style="width: 16px; height: 16px; background-color: #0d3968; margin-right: 8px;"></div>
+                                            <div style="font-size: 14px; color: #111827;">Retail</div>
+                                        </div>
+                                        
+                                        <!-- Service -->
+                                        <div style="display: flex; align-items: center;">
+                                            <div style="width: 16px; height: 16px; background-color: #93c5fd; margin-right: 8px;"></div>
+                                            <div style="font-size: 14px; color: #111827;">Service</div>
+                                        </div>
+                                        
+                                        <!-- Other -->
+                                        <div style="display: flex; align-items: center;">
+                                            <div style="width: 16px; height: 16px; background-color: #0073ff; margin-right: 8px;"></div>
+                                            <div style="font-size: 14px; color: #111827;">Other</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="activity-card">
+                        <div class="activity-header">
+                            <h3 class="activity-title">Recent Activity</h3>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon green">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-text">New business registered: Sunset Cafe</p>
+                                <p class="activity-time">10 minutes ago</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon blue">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-text">New staff added: James Wilson at Metro Clinic</p>
+                                <p class="activity-time">2 hours ago</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon amber">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-text">City Salon updated their service offerings</p>
+                                <p class="activity-time">Yesterday</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Businesses Tab -->
+                <div id="businesses-tab">
+                    <div class="dashboard-header">
+                        <h1 class="page-title">Manage Businesses</h1>
+                        <button class="table-action">
+                            <i class="fas fa-user-plus"></i>
+                            Add Business
+                        </button>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Business Name</th>
+                                        <th>Owner</th>
+                                        <th>Type</th>
+                                        <th>Active Queues</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="td-name">City Salon</td>
+                                        <td class="td-text">Sarah Johnson</td>
+                                        <td class="td-text">Salon</td>
+                                        <td class="td-text">12</td>
+                                        <td>
+                                            <span class="status-pill active">Active</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="action-btn view" title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="action-btn edit" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="action-btn delete" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-name">Metro Clinic</td>
+                                        <td class="td-text">Dr. Emily Martinez</td>
+                                        <td class="td-text">Healthcare</td>
+                                        <td class="td-text">8</td>
+                                        <td>
+                                            <span class="status-pill active">Active</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="action-btn view" title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="action-btn edit" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="action-btn delete" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-name">Tech Repair Shop</td>
+                                        <td class="td-text">Michael Chen</td>
+                                        <td class="td-text">Repair</td>
+                                        <td class="td-text">5</td>
+                                        <td>
+                                            <span class="status-pill inactive">Inactive</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="action-btn view" title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="action-btn edit" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="action-btn delete" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-name">Gourmet Bistro</td>
+                                        <td class="td-text">Chef Antonio</td>
+                                        <td class="td-text">Restaurant</td>
+                                        <td class="td-text">9</td>
+                                        <td>
+                                            <span class="status-pill active">Active</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="action-btn view" title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="action-btn edit" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="action-btn delete" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-name">Wellness Spa</td>
+                                        <td class="td-text">Jessica Williams</td>
+                                        <td class="td-text">Spa</td>
+                                        <td class="td-text">0</td>
+                                        <td>
+                                            <span class="status-pill inactive">Inactive</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="action-btn view" title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="action-btn edit" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="action-btn delete" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Business Stats Summary -->
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h2 class="chart-title">Businesses by Type</h2>
+                            <div class="business-type-bars">
+                                <div class="business-type-bar">
+                                    <div class="business-type-header">
+                                        <span class="business-type-label">Healthcare</span>
+                                        <span class="business-type-value">20%</span>
+                                    </div>
+                                    <div class="business-type-progress">
+                                        <div class="business-type-fill" style="width: 20%;"></div>
+                                    </div>
+                                </div>
+                                <div class="business-type-bar">
+                                    <div class="business-type-header">
+                                        <span class="business-type-label">Salon/Spa</span>
+                                        <span class="business-type-value">40%</span>
+                                    </div>
+                                    <div class="business-type-progress">
+                                        <div class="business-type-fill" style="width: 40%;"></div>
+                                    </div>
+                                </div>
+                                <div class="business-type-bar">
+                                    <div class="business-type-header">
+                                        <span class="business-type-label">Restaurant</span>
+                                        <span class="business-type-value">25%</span>
+                                    </div>
+                                    <div class="business-type-progress">
+                                        <div class="business-type-fill" style="width: 25%;"></div>
+                                    </div>
+                                </div>
+                                <div class="business-type-bar">
+                                    <div class="business-type-header">
+                                        <span class="business-type-label">Repair/Service</span>
+                                        <span class="business-type-value">15%</span>
+                                    </div>
+                                    <div class="business-type-progress">
+                                        <div class="business-type-fill" style="width: 15%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chart-card">
+                            <h2 class="chart-title">Activity Overview</h2>
+                            <div class="activity-grid">
+                                <div class="activity-stat blue">
+                                    <div class="activity-stat-header">
+                                        <i class="fas fa-calendar activity-stat-icon blue"></i>
+                                        <span class="activity-stat-label">This Month</span>
+                                    </div>
+                                    <div>
+                                        <p class="activity-stat-value">+12</p>
+                                        <p class="activity-stat-text">New businesses</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-stat green">
+                                    <div class="activity-stat-header">
+                                        <i class="fas fa-users activity-stat-icon green"></i>
+                                        <span class="activity-stat-label">Active</span>
+                                    </div>
+                                    <div>
+                                        <p class="activity-stat-value">87%</p>
+                                        <p class="activity-stat-text">Usage rate</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-stat amber">
+                                    <div class="activity-stat-header">
+                                        <i class="fas fa-clock activity-stat-icon amber"></i>
+                                        <span class="activity-stat-label">Avg. Time</span>
+                                    </div>
+                                    <div>
+                                        <p class="activity-stat-value">3.4h</p>
+                                        <p class="activity-stat-text">Daily usage</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-stat purple">
+                                    <div class="activity-stat-header">
+                                        <i class="fas fa-download activity-stat-icon purple"></i>
+                                        <span class="activity-stat-label">Downloads</span>
+                                    </div>
+                                    <div>
+                                        <p class="activity-stat-value">2.3k</p>
+                                        <p class="activity-stat-text">App installs</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Staff Tab -->
+                <div id="staff-tab">
+                    <div class="dashboard-header">
+                        <h1 class="page-title">Manage Staff</h1>
+                        <button class="table-action">
+                            <i class="fas fa-user-plus"></i>
+                            Add Staff Member
+                        </button>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Business</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="td-name">
+                                            <div class="flex items-center">
+                                                <div style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background-color: #e5e7eb; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem; color: #4b5563; font-weight: 600;">
+                                                    JS
+                                                </div>
+                                                John Smith
+                                            </div>
+                                        </td>
+                                        <td class="td-text">john@cityhairstudio.com</td>
+                                        <td class="td-text">Staff</td>
+                                        <td class="td-text">City Salon</td>
+                                        <td>
+                                            <span class="status-pill active">Active</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="action-btn view" title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="action-btn edit" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="action-btn delete" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-name">
+                                            <div class="flex items-center">
+                                                <div style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background-color: #e5e7eb; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem; color: #4b5563; font-weight: 600;">
+                                                    MG
+                                                </div>
+                                                Maria Garcia
+                                            </div>
+                                        </td>
+                                        <td class="td-text">maria@cityhairstudio.com</td>
+                                        <td class="td-text">Manager</td>
+                                        <td class="td-text">City Salon</td>
+                                        <td>
+                                            <span class="status-pill active">Active</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="action-btn view" title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="action-btn edit" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="action-btn delete" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-name">
+                                            <div class="flex items-center">
+                                                <div style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background-color: #e5e7eb; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem; color: #4b5563; font-weight: 600;">
+                                                    AJ
+                                                </div>
+                                                Dr. Alex Johnson
+                                            </div>
+                                        </td>
+                                        <td class="td-text">alex@metroclinic.com</td>
+                                        <td class="td-text">Staff</td>
+                                        <td class="td-text">Metro Clinic</td>
+                                        <td>
+                                            <span class="status-pill active">Active</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="action-btn view" title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="action-btn edit" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="action-btn delete" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-name">
+                                            <div class="flex items-center">
+                                                <div style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background-color: #e5e7eb; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem; color: #4b5563; font-weight: 600;">
+                                                    EW
+                                                </div>
+                                                Emma Wilson
+                                            </div>
+                                        </td>
+                                        <td class="td-text">emma@techrepair.com</td>
+                                        <td class="td-text">Staff</td>
+                                        <td class="td-text">Tech Repair Shop</td>
+                                        <td>
+                                            <span class="status-pill inactive">Inactive</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="action-btn view" title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="action-btn edit" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="action-btn delete" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-name">
+                                            <div class="flex items-center">
+                                                <div style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background-color: #e5e7eb; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem; color: #4b5563; font-weight: 600;">
+                                                    RB
+                                                </div>
+                                                Robert Brown
+                                            </div>
+                                        </td>
+                                        <td class="td-text">robert@gourmetbistro.com</td>
+                                        <td class="td-text">Manager</td>
+                                        <td class="td-text">Gourmet Bistro</td>
+                                        <td>
+                                            <span class="status-pill active">Active</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="action-btn view" title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="action-btn edit" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="action-btn delete" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Tab -->
+<div id="analytics-tab">
+    <div class="dashboard-header">
+        <h1 class="page-title">System Analytics</h1>
+        <div class="time-range-selector">
+            <select class="time-select">
+                <option value="today">Today</option>
+                <option value="week" selected>This Week</option>
+                <option value="month">This Month</option>
+                <option value="year">This Year</option>
+            </select>
+            <button class="table-action" style="margin-left: 0.5rem;">
+                <i class="fas fa-download"></i>
+                Export
+            </button>
+        </div>
+    </div>
+
+    <!-- 2x2 Grid Layout for Charts -->
+    <div class="charts-grid">
+        <!-- Chart 1: System Usage Trend -->
+        <div class="chart-card">
+            <h2 class="chart-title">System Usage Trend</h2>
+            <div class="chart-container">
+                <div style="position: relative; height: 100%; display: flex; flex-direction: column;">
+                    <!-- Y-axis labels -->
+                    <div style="position: absolute; left: 0; top: 10%; font-size: 12px; color: #6b7280;">250</div>
+                    <div style="position: absolute; left: 0; top: 50%; font-size: 12px; color: #6b7280;">150</div>
+                    <div style="position: absolute; left: 0; top: 90%; font-size: 12px; color: #6b7280;">50</div>
+                    
+                    <!-- Bar chart with labels -->
+                    <div class="bar-chart" style="height: 85%; margin-top: auto; padding-left: 30px; padding-bottom: 25px;">
+                        <div class="bar" style="height: 45%;" title="Jan: 170"></div>
+                        <div class="bar" style="height: 50%;" title="Feb: 180"></div>
+                        <div class="bar" style="height: 55%;" title="Mar: 190"></div>
+                        <div class="bar" style="height: 60%;" title="Apr: 200"></div>
+                        <div class="bar" style="height: 65%;" title="May: 210"></div>
+                        <div class="bar" style="height: 70%;" title="Jun: 220"></div>
+                        <div class="bar" style="height: 75%;" title="Jul: 230"></div>
+                        <div class="bar" style="height: 80%;" title="Aug: 240"></div>
+                        <div class="bar" style="height: 85%;" title="Sep: 250"></div>
+                        <div class="bar" style="height: 90%;" title="Oct: 260"></div>
+                        <div class="bar" style="height: 95%;" title="Dec: 270"></div>
+                    </div>
+                    
+                    <!-- X-axis labels -->
+                    <div style="display: flex; justify-content: space-around; padding-left: 30px; margin-top: 5px;">
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">Jan</div>
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">Feb</div>
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">Mar</div>
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">Apr</div>
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">May</div>
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">Jun</div>
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">Jul</div>
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">Aug</div>
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">Sep</div>
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">Oct</div>
+                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">Dec</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart 2: Queue Distribution by Business Type -->
+        <div class="chart-card">
+            <h2 class="chart-title">Queue Distribution by Business Type</h2>
+            <div class="chart-container">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                    <!-- Donut Chart -->
+                    <div style="position: relative; width: 200px; height: 200px; margin-bottom: 20px;">
+                        <!-- Donut segments -->
+                        <svg viewBox="0 0 100 100" style="transform: rotate(-90deg); width: 100%; height: 100%;">
+                            <!-- Food segment (dark blue) - 25% -->
+                            <circle r="25" cx="50" cy="50" fill="transparent" 
+                                   stroke="#000dff" stroke-width="50" stroke-dasharray="39.25 117.75" />
+                            
+                            <!-- Retail segment (medium blue) - 25% -->
+                            <circle r="25" cx="50" cy="50" fill="transparent" 
+                                   stroke="#0d3968" stroke-width="50" stroke-dasharray="39.25 117.75" stroke-dashoffset="-39.25" />
+                            
+                            <!-- Service segment (light blue) - 25% -->
+                            <circle r="25" cx="50" cy="50" fill="transparent" 
+                                   stroke="#93c5fd" stroke-width="50" stroke-dasharray="39.25 117.75" stroke-dashoffset="-78.5" />
+                            
+                            <!-- Other segment (very light blue) - 25% -->
+                            <circle r="25" cx="50" cy="50" fill="transparent" 
+                                   stroke="#0073ff" stroke-width="50" stroke-dasharray="39.25 117.75" stroke-dashoffset="-117.75" />
+                            
+                            <!-- Inner white circle to create donut hole -->
+                            <circle r="25" cx="50" cy="50" fill="white" />
+                        </svg>
+                    </div>
+                    
+                    <!-- Legend -->
+                    <div style="display: flex; justify-content: center; gap: 20px;">
+                        <!-- Food -->
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 16px; height: 16px; background-color: #000dff; margin-right: 8px;"></div>
+                            <div style="font-size: 14px; color: #111827;">Food</div>
+                        </div>
+                        
+                        <!-- Retail -->
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 16px; height: 16px; background-color: #0d3968; margin-right: 8px;"></div>
+                            <div style="font-size: 14px; color: #111827;">Retail</div>
+                        </div>
+                        
+                        <!-- Service -->
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 16px; height: 16px; background-color: #93c5fd; margin-right: 8px;"></div>
+                            <div style="font-size: 14px; color: #111827;">Service</div>
+                        </div>
+                        
+                        <!-- Other -->
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 16px; height: 16px; background-color: #0073ff; margin-right: 8px;"></div>
+                            <div style="font-size: 14px; color: #111827;">Other</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart 3: Average Wait Time by Hour -->
+        <div class="chart-card">
+            <h2 class="chart-title">Average Wait Time by Hour</h2>
+            <div class="chart-container">
+                <svg class="chart-path" viewBox="0 0 700 300" style="width: 100%; height: 100%;">
+                    <!-- Smooth Line path -->
+                    <path d="M 0 220 
+                             C 40 210, 40 200, 80 200 
+                             S 120 190, 160 190 
+                             S 200 192, 240 192 
+                             S 280 210, 320 210 
+                             S 360 170, 400 170 
+                             S 440 150, 480 150 
+                             S 520 140, 560 140 
+                             S 600 130, 640 130" 
+                          fill="none" 
+                          stroke="#1e88e5" 
+                          stroke-width="4" 
+                          stroke-linecap="round" />
+                
+                    <!-- Dots on data points -->
+                    <circle cx="0" cy="220" r="5" fill="#1e88e5" />
+                    <circle cx="80" cy="200" r="5" fill="#1e88e5" />
+                    <circle cx="160" cy="190" r="5" fill="#1e88e5" />
+                    <circle cx="240" cy="192" r="5" fill="#1e88e5" />
+                    <circle cx="320" cy="210" r="5" fill="#1e88e5" />
+                    <circle cx="400" cy="170" r="5" fill="#1e88e5" />
+                    <circle cx="480" cy="150" r="5" fill="#1e88e5" />
+                    <circle cx="560" cy="140" r="5" fill="#1e88e5" />
+                    <circle cx="640" cy="130" r="5" fill="#1e88e5" />
+                </svg>
+                
+                <div style="display: flex; justify-content: space-between; padding: 0 10px; font-size: 14px; margin-top: -10px;">
+                    <span>9</span>
+                    <span>10</span>
+                    <span>11</span>
+                    <span>12</span>
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                    <span>5</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart 4: Customer Satisfaction -->
+        <div class="chart-card">
+            <h2 class="chart-title">Customer Satisfaction</h2>
+            <div class="chart-container">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                    <div style="position: relative; width: 200px; height: 200px; margin-bottom: 20px;">
+                        <svg width="200" height="200">
+                            <circle class="circle-background" cx="100" cy="100" r="70" stroke="#e0e3eb" fill="none" stroke-width="15" />
+                            <circle class="circle-progress" cx="100" cy="100" r="70" stroke="#00b894" fill="none" stroke-width="15" stroke-linecap="round" stroke-dasharray="440" stroke-dashoffset="100" transform="rotate(-90, 100, 100)" />
+                        </svg>
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: bold; color: #00b894; z-index: 10;">92%</div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: center; gap: 30px; margin-top: 20px; font-size: 14px; color: #555;">
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <div style="width: 12px; height: 12px; border-radius: 50%; background: #00b894;"></div>
+                            Satisfied
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <div style="width: 12px; height: 12px; border-radius: 50%; background: #e67e22;"></div>
+                            Neutral
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <div style="width: 12px; height: 12px; border-radius: 50%; background: #e74c3c;"></div>
+                            Dissatisfied
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Metrics Table -->
+    <div class="table-card">
+        <div class="table-header">
+            <h3 class="table-title">Key Performance Metrics</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Current</th>
+                        <th>Previous</th>
+                        <th>Change</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="td-name">Average Wait Time</td>
+                        <td class="td-text">18 mins</td>
+                        <td class="td-text">22 mins</td>
+                        <td style="color: #b91010;">
+                            -18.2% <span style="color: #b91010;">↓</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td-name">Average Service Time</td>
+                        <td class="td-text">15 mins</td>
+                        <td class="td-text">17 mins</td>
+                        <td style="color: #b91010;">
+                            -11.8% <span style="color: #b91010;">↓</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td-name">Customers Served per Day</td>
+                        <td class="td-text">420</td>
+                        <td class="td-text">385</td>
+                        <td style="color: #10b981;">
+                            +9.1% <span style="color: #10b981;">↑</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td-name">Customer Satisfaction</td>
+                        <td class="td-text">92%</td>
+                        <td class="td-text">89%</td>
+                        <td style="color: #10b981;">
+                            +3.4% <span style="color: #10b981;">↑</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+                    
+
+                <!-- Settings Tab -->
+                <div id="settings-tab">
+                    <h1 class="page-title">System Settings</h1>
+                    
+                    <div class="settings-card">
+                        <div class="settings-header">
+                            <h2 class="settings-title">General Settings</h2>
+                        </div>
+                        <div class="settings-body">
+                            <div class="settings-section">
+                                <div class="settings-item">
+                                    <div class="settings-item-content">
+                                        <h3>System Maintenance Mode</h3>
+                                        <p>Temporarily disable the system for maintenance</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="maintenance-mode">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="settings-item">
+                                    <div class="settings-item-content">
+                                        <h3>Enable New Account Registration</h3>
+                                        <p>Allow new businesses to register for accounts</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="registration-enabled" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="settings-item">
+                                    <div class="settings-item-content">
+                                        <h3>Enable System Analytics</h3>
+                                        <p>Collect anonymous usage data to improve the system</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="analytics-enabled" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-section">
+                                <h2 class="settings-title" style="margin-bottom: 1rem;">System Defaults</h2>
+                                
+                                <div style="display: grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 1rem;">
+                                    <div>
+                                        <label class="settings-item-content" style="display: block; margin-bottom: 0.5rem;">
+                                            <h3 style="font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.25rem;">Default Wait Time Calculation</h3>
+                                        </label>
+                                        <select class="settings-select">
+                                            <option>Average historical service time</option>
+                                            <option>Fixed time per customer</option>
+                                            <option>Dynamic based on service type</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="settings-item-content" style="display: block; margin-bottom: 0.5rem;">
+                                            <h3 style="font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.25rem;">Default Notification Method</h3>
+                                        </label>
+                                        <select class="settings-select">
+                                            <option>SMS</option>
+                                            <option>Email</option>
+                                            <option>Push Notification</option>
+                                            <option>All Methods</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="settings-item-content" style="display: block; margin-bottom: 0.5rem;">
+                                            <h3 style="font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.25rem;">Business Default Time Zone</h3>
+                                        </label>
+                                        <select class="settings-select">
+                                            <option>UTC-08:00 (Pacific Standard Time)</option>
+                                            <option>UTC-05:00 (Eastern Standard Time)</option>
+                                            <option>UTC+00:00 (Greenwich Mean Time)</option>
+                                            <option>UTC+01:00 (Central European Time)</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="settings-item-content" style="display: block; margin-bottom: 0.5rem;">
+                                            <h3 style="font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.25rem;">System Language</h3>
+                                        </label>
+                                        <select class="settings-select">
+                                            <option>English (United States)</option>
+                                            <option>Turkish (Turkey)</option>
+                                            <option>Arabic (Saudi Arabia)</option>
+                                            <option>French (Canada)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-section">
+                                <h2 class="settings-title" style="margin-bottom: 1rem;">Security Settings</h2>
+                                
+                                <div class="settings-item">
+                                    <div class="settings-item-content">
+                                        <h3>Two-Factor Authentication</h3>
+                                        <p>Require 2FA for all admin accounts</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="twofa-enabled" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="settings-item">
+                                    <div class="settings-item-content">
+                                        <h3>GDPR Compliance Mode</h3>
+                                        <p>Enforce strict data protection rules</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="gdpr-enabled" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div style="margin-top: 1rem;">
+                                    <label class="settings-item-content" style="display: block; margin-bottom: 0.5rem;">
+                                        <h3 style="font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.25rem;">Password Policy</h3>
+                                    </label>
+                                    <select class="settings-select">
+                                        <option>Standard (8+ chars, 1 number)</option>
+                                        <option>Strong (10+ chars, number, symbol)</option>
+                                        <option>Very Strong (12+ chars, number, symbol, mixed case)</option>
+                                    </select>
+                                </div>
+                                
+                                <div style="margin-top: 1rem;">
+                                    <label class="settings-item-content" style="display: block; margin-bottom: 0.5rem;">
+                                        <h3 style="font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.25rem;">Session Timeout</h3>
+                                    </label>
+                                    <select class="settings-select">
+                                        <option>30 minutes</option>
+                                        <option>1 hour</option>
+                                        <option>2 hours</option>
+                                        <option>8 hours</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-footer">
+                            <button class="btn btn-cancel">Cancel</button>
+                            <button class="btn btn-save">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Business Details (eye icon) Modal -->
+<div id="business-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modal-business-name">Business Details</h2>
+            <span class="modal-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="detail-row">
+                <div class="detail-label">Business Name:</div>
+                <div id="modal-name" class="detail-value">-</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Owner:</div>
+                <div id="modal-owner" class="detail-value">-</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Type:</div>
+                <div id="modal-type" class="detail-value">-</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Email:</div>
+                <div id="modal-email" class="detail-value">-</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Phone Number:</div>
+                <div id="modal-phone" class="detail-value">-</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close-btn">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Business Edit Modal HTML -->
+<div id="business-edit-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Edit Business</h2>
+            <span class="modal-close" id="close-business-edit">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="detail-row">
+                <div class="detail-label">Business Name:</div>
+                <div class="detail-value">
+                    <input type="text" id="edit-business-name" class="password-input" style="width: 100%;">
+                    <input type="hidden" id="edit-business-index" value="0">
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Owner:</div>
+                <div class="detail-value">
+                    <input type="text" id="edit-business-owner" class="password-input" style="width: 100%;">
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Type:</div>
+                <div class="detail-value">
+                    <input type="text" id="edit-business-type" class="password-input" style="width: 100%;">
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Email:</div>
+                <div class="detail-value">
+                    <input type="email" id="edit-business-email" class="password-input" style="width: 100%;">
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Phone Number:</div>
+                <div class="detail-value">
+                    <input type="tel" id="edit-business-phone" class="password-input" style="width: 100%;">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close-btn" id="business-edit-cancel">Cancel</button>
+            <button class="btn btn-save" id="business-edit-save" style="margin-left: 10px;">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Business Modal -->
+<div id="add-business-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Add New Business</h2>
+            <span class="modal-close" id="close-add-business">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="detail-row">
+                <div class="detail-label">Business Name:</div>
+                <div class="detail-value">
+                    <input type="text" id="add-business-name" class="password-input" style="width: 100%;">
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Owner:</div>
+                <div class="detail-value">
+                    <input type="text" id="add-business-owner" class="password-input" style="width: 100%;">
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Type:</div>
+                <div class="detail-value">
+                    <input type="text" id="add-business-type" class="password-input" style="width: 100%;">
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Email:</div>
+                <div class="detail-value">
+                    <input type="email" id="add-business-email" class="password-input" style="width: 100%;">
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Password:</div>
+                <div class="detail-value password-field">
+                    <input type="password" id="add-business-password" class="password-input" style="width: 100%;">
+                    <button type="button" class="password-toggle" id="toggle-add-business-password">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Phone Number:</div>
+                <div class="detail-value">
+                    <input type="tel" id="add-business-phone" class="password-input" style="width: 100%;">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close-btn" id="cancel-add-business">Cancel</button>
+            <button class="btn btn-save" id="save-add-business" style="margin-left: 10px;">Add Business</button>
+        </div>
+    </div>
+</div>
+
+<!-- Staff (eye icon) Modal (much simpler) -->
+<div id="staff-modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+    <div style="background-color: white; margin: 10% auto; padding: 20px; width: 90%; max-width: 500px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">
+            <h3 style="margin: 0;">Staff Details</h3>
+            <span id="close-staff-modal" style="cursor: pointer; font-size: 24px;">&times;</span>
+        </div>
+        <div>
+            <p><strong>Name:</strong> <span id="staff-name">-</span></p>
+            <p><strong>Email:</strong> <span id="staff-email">-</span></p>
+            <p><strong>Role:</strong> <span id="staff-role">-</span></p>
+            <p><strong>Business:</strong> <span id="staff-business">-</span></p>
+            <p><strong>Phone:</strong> <span id="staff-phone">-</span></p>
+            <p>
+                <strong>Password:</strong> 
+                <span style="display: inline-flex; align-items: center;">
+                    <input id="staff-password" type="password" value="********" style="margin-right: 10px; padding: 5px;" readonly>
+                    <button id="toggle-password" style="background: none; border: none; cursor: pointer;">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </span>
+            </p>
+        </div>
+        <div style="text-align: right; margin-top: 20px;">
+            <button id="staff-modal-close" style="padding: 8px 16px; background-color: #e5e7eb; border: none; border-radius: 4px; cursor: pointer;">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Staff Edit Modal Functionality
+setTimeout(function() {
+    // Staff data in array format (matching the order in the table)
+    const staffData = [
+        {
+            name: "John Smith",
+            email: "john@cityhairstudio.com",
+            role: "Staff",
+            business: "City Salon",
+            phone: "(555) 234-5678",
+            password: "Js123456"
+        },
+        // Additional staff members...
+    ];
+    
+    // Add click handlers to edit buttons
+    const staffTab = document.getElementById('staff-tab');
+    if (staffTab) {
+        const editButtons = staffTab.querySelectorAll('.action-btn.edit');
+        
+        editButtons.forEach((button, index) => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Get staff data and populate form
+                if (index < staffData.length) {
+                    const staff = staffData[index];
+                    
+                    document.getElementById('edit-staff-name').textContent = staff.name;
+                    document.getElementById('edit-staff-index').value = index;
+                    document.getElementById('edit-staff-email').value = staff.email;
+                    document.getElementById('edit-staff-role').value = staff.role;
+                    document.getElementById('edit-staff-business').value = staff.business;
+                    document.getElementById('edit-staff-phone').value = staff.phone;
+                    
+                    document.getElementById('staff-edit-modal').style.display = 'block';
+                }
+            });
+        });
+        
+        // Save button handler
+        // Close button handlers
+        // etc...
+    }
+}, 1500);
+    </script>
+
+   <!-- Staff Edit Modal -->
+<div id="staff-edit-modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+    <div style="background-color: white; margin: 10% auto; padding: 20px; width: 90%; max-width: 500px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">
+            <h3 style="margin: 0;">Edit Staff</h3>
+            <span id="close-staff-edit-modal" style="cursor: pointer; font-size: 24px;">&times;</span>
+        </div>
+        <div>
+            <div style="margin-bottom: 15px;">
+                <strong>Name:</strong> <span id="edit-staff-name">-</span>
+                <input type="hidden" id="edit-staff-index" value="0">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label for="edit-staff-email" style="display: block; margin-bottom: 5px; font-weight: 500;">Email:</label>
+                <input type="email" id="edit-staff-email" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label for="edit-staff-role" style="display: block; margin-bottom: 5px; font-weight: 500;">Role:</label>
+                <input type="text" id="edit-staff-role" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label for="edit-staff-business" style="display: block; margin-bottom: 5px; font-weight: 500;">Business:</label>
+                <input type="text" id="edit-staff-business" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label for="edit-staff-phone" style="display: block; margin-bottom: 5px; font-weight: 500;">Phone Number:</label>
+                <input type="tel" id="edit-staff-phone" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;">
+            </div>
+        </div>
+        <div style="text-align: right; margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+            <button id="staff-edit-cancel" style="padding: 8px 16px; background-color: #e5e7eb; border: none; border-radius: 4px; cursor: pointer;">Cancel</button>
+            <button id="staff-edit-save" style="padding: 8px 16px; background-color: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer;">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Staff Member Modal -->
+<div id="add-staff-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Add New Staff Member</h2>
+            <span class="modal-close" id="close-add-staff">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="detail-row">
+                <div class="detail-label">Name:</div>
+                <div class="detail-value">
+                    <input type="text" id="add-staff-name" class="password-input" style="width: 100%;">
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Email:</div>
+                <div class="detail-value">
+                    <input type="email" id="add-staff-email" class="password-input" style="width: 100%;">
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Role:</div>
+                <div class="detail-value">
+                    <input type="role" id="add-staff-email" class="password-input" style="width: 100%;">
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Business:</div>
+                <div class="detail-value">
+                    <input type="business" id="add-staff-email" class="password-input" style="width: 100%;">
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Phone Number:</div>
+                <div class="detail-value">
+                    <input type="tel" id="add-staff-phone" class="password-input" style="width: 100%;" placeholder="(555) 123-4567">
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Password:</div>
+                <div class="detail-value password-field">
+                    <input type="password" id="add-staff-password" class="password-input" style="width: 100%;">
+                    <button type="button" class="password-toggle" id="toggle-add-password">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close-btn" id="cancel-add-staff">Cancel</button>
+            <button class="btn btn-save" id="submit-add-staff" style="margin-left: 10px;">Add Staff Member</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
