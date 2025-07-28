@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Queue - Policies</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="policy-pages.js">
+</head>
+<style>
+            /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            background-color: #f9fafb;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        .text-blue {
+            color: #2563eb;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        /* Header */
+        header {
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            color: #2563eb;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+        
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        
+        .logo-blue {
+            color: #2563eb;
+        }
+        
+        .logo-amber {
+            color: #f59e0b;
+        }
+        
+        /* Navigation */
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            color: #4b5563;
+            transition: all 0.2s;
+        }
+        
+        .nav-link.active {
+            background-color: #2563eb;
+            color: white;
+        }
+        
+        .nav-link:hover:not(.active) {
+            background-color: #2563eb;
+            color: white;
+        }
+        
+        .menu-button {
+            display: block;
+            font-size: 1.25rem;
+            color: #4b5563;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        @media (min-width: 768px) {
+            .menu-button {
+                display: none;
+            }
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #1e293b;
+            padding-top: 3rem;
+            padding-bottom: 2rem;
+            margin-top: 4rem;
+            color: #ffffff;
+        }
+        
+        .footer-description {
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        /* Social links centered below description */
+        .social-links-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .social-link {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 9999px;
+            background-color: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            transition: all 0.3s;
+        }
+        
+        .social-link:hover {
+            background-color: #2563eb;
+            color: white;
+        }
+        
+        /* Three column layout */
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-column {
+            margin-bottom: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+            .footer-column {
+                margin-bottom: 0;
+            }
+            
+            .footer-logo-column {
+                flex: 1;
+            }
+            
+            .footer-links-column {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+            }
+            
+            .footer-contact-column {
+                flex: 1;
+                display: flex;
+                justify-content: flex-end;
+            }
+        }
+        
+        /* Logo styling */
+        .footer-logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-nav-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-nav-list li {
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        @media (min-width: 768px) {
+            .footer-nav-list li {
+                text-align: center;
+            }
+        }
+        
+        .footer-nav-link {
+            color: #94a3b8;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        
+        .footer-nav-link:hover {
+            color: #ffffff;
+        }
+        
+        /* Contact items styling */
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            color: #94a3b8;
+            text-decoration: none;
+        }
+        
+        .contact-icon {
+            color: #2563eb;
+            width: 1.25rem;
+            margin-right: 0.5rem;
+        }
+        
+        /* Footer bottom section */
+        .footer-bottom {
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        @media (min-width: 768px) {
+            .footer-bottom {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+        
+        .copyright {
+            color: #94a3b8;
+            margin-bottom: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .copyright {
+                margin-bottom: 0;
+            }
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .footer-link {
+            color: #94a3b8;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        
+        .footer-link:hover {
+            color: #ffffff;
+        }
+        
+        /* Policy Page Specific Styles */
+        .policy-header {
+            padding-top: 8rem;
+            padding-bottom: 0;
+            background-color: #fff;
+            border-bottom: none;
+            margin-bottom: 0;
+            
+        }
+        .policy-header-group {
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem; /* Add some space between the nav and content */
+        }
+        .policy-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+        
+        
+        .policy-subtitle {
+            color: #6b7280;
+            font-size: 1.125rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .policy-nav {
+            background-color: #f3f4f6;
+            padding: 1rem 0;
+            position: sticky;
+            top: 72px; /* Height of header */
+            z-index: 5;
+            border-bottom: 1px solid #e5e7eb;
+            margin-top: 0;
+        }
+        
+        .policy-nav-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding: 0.5rem 0;
+        }
+        
+        .policy-nav-link {
+            padding: 0.5rem 1rem;
+            color: #4b5563;
+            font-weight: 500;
+            white-space: nowrap;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
+        }
+        
+        .policy-nav-link:hover {
+            color: #2563eb;
+            background-color: #eff6ff;
+        }
+        
+        .policy-nav-link.active {
+            background-color: #2563eb;
+            color: white;
+        }
+        
+        .policy-content {
+            background-color: white;
+            padding-top: 2rem;
+            padding-bottom: 3rem;
+        }
+        
+        .policy-section {
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            padding: 0 1rem;
+        }
+        
+        .policy-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .section-subtitle {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 1.5rem 0 1rem;
+        }
+        
+        .policy-list {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .policy-list li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .policy-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+        
+        .policy-table th {
+            background-color: #f3f4f6;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .policy-table td {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .policy-table tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        
+        .policy-callout {
+            background-color: #eff6ff;
+            border-left: 4px solid #2563eb;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 0.375rem 0.375rem 0;
+        }
+        
+        .policy-callout p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .last-updated {
+            font-style: italic;
+            color: #6b7280;
+            margin-top: 3rem;
+            font-size: 0.875rem;
+        }
+        
+        .policy-content a {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+        
+        .policy-content a:hover {
+            text-decoration: none;
+        }
+        
+        /* Tab system for the policies */
+        .tabs {
+            display: none;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+        }
+        
+        .tab-button {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .tab-button:hover {
+            color: #2563eb;
+        }
+        
+        .tab-button.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+        
+        /* Table of contents for each policy */
+        .toc {
+            background-color: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .toc-title {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.125rem;
+        }
+        
+        .toc-list {
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .toc-list li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .toc-list a {
+            color: #4b5563;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .toc-list a:hover {
+            color: #2563eb;
+        }
+        
+     .facebook:hover {
+  background-color: #1877F2;
+  color: white;
+}
+.Twitter:hover {
+  background-color:  #000000;
+  color: white;
+}
+
+.instagram:hover {
+  background:  linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  color: white;
+}
+.linkedin:hover {
+  background-color: #0A66C2;
+  color: white;
+}
+</style>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    
+                </div>
+                <a href="guest.html">
+                    <span class="logo-text">
+                        <span class="logo-blue">Smart</span><span class="logo-amber">Queue</span>
+                    </span>
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="guest.html" class="nav-link">Home</a></li>
+                    <li><a href="Login.html" class="nav-link">Join Queue</a></li>
+                    <li><a href="guest.html#about-us" class="nav-link">About</a></li>
+                </ul>
+            </nav>
+            <button class="menu-button">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+<div class="policy-header-group">
+    <!-- Policy Header -->
+    <section class="policy-header text-center">
+        <div class="container">
+            <h1 class="policy-title">Legal Policies</h1>
+            <p class="policy-subtitle">Our commitment to transparency, privacy, and fair service usage</p>
+        </div>
+    </section>
+
+    <!-- Policy Navigation -->
+    <div class="policy-nav">
+        <div class="container">
+            <div class="tab-buttons">
+                <button class="tab-button active" data-tab="privacy-policy">Privacy Policy</button>
+                <button class="tab-button" data-tab="terms-of-service">Terms of Service</button>
+                <button class="tab-button" data-tab="cookie-policy">Cookie Policy</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Policy Content -->
+    <div class="policy-content">
+        <div class="container">
+            <!-- Privacy Policy -->
+            <div class="tab-content active" id="privacy-policy">
+                <div class="policy-section">
+                    <div class="toc">
+                        <div class="toc-title">Table of Contents</div>
+                        <ul class="toc-list">
+                            <li><a href="#privacy-intro">Introduction</a></li>
+                            <li><a href="#privacy-collection">Information We Collect</a></li>
+                            <li><a href="#privacy-usage">How We Use Your Information</a></li>
+                            <li><a href="#privacy-sharing">Information Sharing and Disclosure</a></li>
+                            <li><a href="#privacy-security">Data Security</a></li>
+                            <li><a href="#privacy-rights">Your Rights and Choices</a></li>
+                            <li><a href="#privacy-children">Children's Privacy</a></li>
+                            <li><a href="#privacy-changes">Changes to This Privacy Policy</a></li>
+                            <li><a href="#privacy-contact">Contact Us</a></li>
+                        </ul>
+                    </div>
+
+                    <div id="privacy-intro">
+                        <h2 class="section-title">Introduction</h2>
+                        <p>Welcome to Smart Queue. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you about how we look after your personal data when you visit our website, use our mobile application, or utilize our queue management services, and it will tell you about your privacy rights and how the law protects you.</p>
+                        <p>Please read this privacy policy carefully to understand our policies and practices regarding your personal information and how we will treat it. If you do not agree with our policies and practices, your choice is not to use our services. By accessing or using our services, you agree to this privacy policy.</p>
+                    </div>
+
+                    <div id="privacy-collection">
+                        <h2 class="section-title">Information We Collect</h2>
+                        <p>We collect several types of information from and about users of our services:</p>
+                        <ul class="policy-list">
+                            <li><strong>Personal Identifiers:</strong> When you register with Smart Queue, we may collect your name, email address, phone number, and other identifiers that can be used to contact you.</li>
+                            <li><strong>Usage Information:</strong> Details of your visits to our website or app, including traffic data, location data, logs, and other communication data and the resources that you access and use.</li>
+                            <li><strong>Queue and Appointment Data:</strong> Information related to your queue registrations, appointments, service preferences, and feedback.</li>
+                            <li><strong>Device Information:</strong> Information about your computer, mobile device, internet connection, including your IP address, operating system, and browser type.</li>
+                        </ul>
+                        
+                        <h3 class="section-subtitle">How We Collect Your Information</h3>
+                        <p>We collect information directly from you when you:</p>
+                        <ul class="policy-list">
+                            <li>Register for our services or create an account</li>
+                            <li>Join a queue through our system</li>
+                            <li>Provide feedback about your experience</li>
+                            <li>Contact our customer support</li>
+                            <li>Subscribe to our newsletters or communications</li>
+                        </ul>
+                        
+                        <p>We also collect information automatically when you:</p>
+                        <ul class="policy-list">
+                            <li>Visit our website or use our mobile application</li>
+                            <li>Interact with our services</li>
+                        </ul>
+                        
+                        <div class="policy-callout">
+                            <p><strong>Note:</strong> We may use cookies and similar tracking technologies to collect information about your interactions with our services. For more information about our use of cookies, please see our <a href="#cookie-policy" class="policy-tab-link" data-tab="cookie-policy">Cookie Policy</a>.</p>
+                        </div>
+                    </div>
+
+                    <div id="privacy-usage">
+                        <h2 class="section-title">How We Use Your Information</h2>
+                        <p>We use the information we collect for various purposes, including to:</p>
+                        <ul class="policy-list">
+                            <li>Provide, maintain, and improve our services</li>
+                            <li>Process and manage your queue registrations and appointments</li>
+                            <li>Send notifications about your queue status and estimated wait times</li>
+                            <li>Analyze usage patterns to enhance user experience</li>
+                            <li>Communicate with you, including sending service updates and marketing communications</li>
+                            <li>Respond to your inquiries and provide customer support</li>
+                            <li>Protect the security and integrity of our services</li>
+                            <li>Comply with legal obligations</li>
+                        </ul>
+                        
+                        <h3 class="section-subtitle">Legal Basis for Processing</h3>
+                        <p>We process your personal information on the following legal grounds:</p>
+                        <ul class="policy-list">
+                            <li><strong>Contract Performance:</strong> Processing necessary for the performance of a contract to which you are a party or to take steps at your request before entering into a contract.</li>
+                            <li><strong>Legitimate Interests:</strong> Processing necessary for our legitimate interests, provided your fundamental rights do not override these interests.</li>
+                            <li><strong>Legal Obligation:</strong> Processing necessary for compliance with a legal obligation to which we are subject.</li>
+                            <li><strong>Consent:</strong> Where you have given consent to the processing of your personal data for specific purposes.</li>
+                        </ul>
+                    </div>
+
+                    <div id="privacy-sharing">
+                        <h2 class="section-title">Information Sharing and Disclosure</h2>
+                        <p>We may share your personal information with:</p>
+                        <ul class="policy-list">
+                            <li><strong>Service Providers:</strong> Third-party vendors, service providers, contractors, or agents who perform services for us or on our behalf and require access to such information to do that work.</li>
+                            <li><strong>Business Partners:</strong> We may share your information with business partners who offer a service to you jointly with us.</li>
+                            <li><strong>Business Clients:</strong> If you use our queue management system at a business location, we may share relevant queue information with that business.</li>
+                            <li><strong>Legal Requirements:</strong> We may disclose your information if required to do so by law or in response to valid requests by public authorities.</li>
+                            <li><strong>Business Transfers:</strong> In connection with any merger, sale of company assets, financing, or acquisition of all or a portion of our business.</li>
+                            <li><strong>With Your Consent:</strong> We may share your information for any other purpose disclosed by us when you provide your consent.</li>
+                        </ul>
+                        
+                        <p>We do not sell your personal information to third parties.</p>
+                    </div>
+
+                    <div id="privacy-security">
+                        <h2 class="section-title">Data Security</h2>
+                        <p>We have implemented appropriate technical and organizational measures to protect the security of your personal information. However, please understand that no method of transmission over the Internet or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security.</p>
+                        
+                        <h3 class="section-subtitle">Data Retention</h3>
+                        <p>We will retain your personal information only for as long as reasonably necessary to fulfill the purposes for which we collected it, including for the purposes of satisfying any legal, regulatory, tax, accounting, or reporting requirements. We may retain your personal information for a longer period in the event of a complaint or if we reasonably believe there is a prospect of litigation.</p>
+                    </div>
+
+                    <div id="privacy-rights">
+                        <h2 class="section-title">Your Rights and Choices</h2>
+                        <p>Depending on your location, you may have certain rights regarding your personal information, which may include:</p>
+                        <ul class="policy-list">
+                            <li><strong>Access:</strong> The right to request access to your personal information.</li>
+                            <li><strong>Correction:</strong> The right to request correction of inaccurate personal information.</li>
+                            <li><strong>Deletion:</strong> The right to request deletion of your personal information.</li>
+                            <li><strong>Restriction:</strong> The right to request restriction of processing of your personal information.</li>
+                            <li><strong>Data Portability:</strong> The right to receive a copy of your personal information in a structured, commonly used format.</li>
+                            <li><strong>Objection:</strong> The right to object to processing of your personal information.</li>
+                            <li><strong>Withdraw Consent:</strong> The right to withdraw consent at any time where we rely on consent to process your personal information.</li>
+                        </ul>
+                        
+                        <p>To exercise any of these rights, please contact us using the contact information provided at the end of this policy.</p>
+                    </div>
+
+                    <div id="privacy-children">
+                        <h2 class="section-title">Children's Privacy</h2>
+                        <p>Our services are not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you are under 13, please do not provide any information on our website or through our services. If we learn we have collected or received personal information from a child under 13 without verification of parental consent, we will delete that information.</p>
+                    </div>
+
+                    <div id="privacy-changes">
+                        <h2 class="section-title">Changes to This Privacy Policy</h2>
+                        <p>We may update our privacy policy from time to time. If we make material changes to how we treat our users' personal information, we will notify you through a notice on our website home page or via email.</p>
+                        <p>Your continued use of our services after we make changes is deemed to be acceptance of those changes, so please check the policy periodically for updates.</p>
+                    </div>
+
+                    <div id="privacy-contact">
+                        <h2 class="section-title">Contact Us</h2>
+                        <p>If you have any questions or concerns about this privacy policy or our privacy practices, please contact us at:</p>
+                        <p><strong>Email:</strong> <a href="mailto:privacy@smartqueue.com">privacy@smartqueue.com</a><br>
+                        <strong>Mail:</strong> Smart Queue, Attn: Privacy Officer, Smart Queue HQ</p>
+                    </div>
+
+                    <p class="last-updated">Last Updated: February 15, 2025</p>
+                </div>
+            </div>
+
+            <!-- Terms of Service -->
+            <div class="tab-content" id="terms-of-service">
+                <div class="policy-section">
+                    <div class="toc">
+                        <div class="toc-title">Table of Contents</div>
+                        <ul class="toc-list">
+                            <li><a href="#terms-intro">Introduction</a></li>
+                            <li><a href="#terms-services">Services Description</a></li>
+                            <li><a href="#terms-account">Account Registration</a></li>
+                            <li><a href="#terms-conduct">User Conduct</a></li>
+                            <li><a href="#terms-intellectual">Intellectual Property</a></li>
+                            <li><a href="#terms-disclaimer">Disclaimers and Limitations</a></li>
+                            <li><a href="#terms-termination">Termination</a></li>
+                            <li><a href="#terms-indemnification">Indemnification</a></li>
+                            <li><a href="#terms-governing">Governing Law</a></li>
+                            <li><a href="#terms-changes">Changes to Terms</a></li>
+                            <li><a href="#terms-contact">Contact Us</a></li>
+                        </ul>
+                    </div>
+
+                    <div id="terms-intro">
+                        <h2 class="section-title">Introduction</h2>
+                        <p>Welcome to Smart Queue. These Terms of Service ("Terms") govern your access to and use of our website, mobile application, and queue management services (collectively, the "Services") provided by Smart Queue ("we," "us," or "our").</p>
+                        <p>By accessing or using our Services, you agree to be bound by these Terms. If you do not agree to these Terms, please do not use our Services.</p>
+                    </div>
+
+                    <div id="terms-services">
+                        <h2 class="section-title">Services Description</h2>
+                        <p>Smart Queue provides queue management solutions that allow users to join virtual queues, receive real-time updates about their queue position, and manage their waiting experience more efficiently. Our Services may include, but are not limited to:</p>
+                        <ul class="policy-list">
+                            <li>Virtual queue registration and management</li>
+                            <li>Queue position notifications and updates</li>
+                            <li>Estimated wait time calculations</li>
+                            <li>User feedback and ratings</li>
+                            <li>Business analytics and reporting</li>
+                        </ul>
+                        
+                        <div class="policy-callout">
+                            <p><strong>Important:</strong> The availability and functionality of our Services may vary depending on your location, device, and the specific business or organization implementing Smart Queue.</p>
+                        </div>
+                    </div>
+
+                    <div id="terms-account">
+                        <h2 class="section-title">Account Registration</h2>
+                        <p>To use certain features of our Services, you may be required to register for an account or provide certain information. When you register, you agree to:</p>
+                        <ul class="policy-list">
+                            <li>Provide accurate, current, and complete information</li>
+                            <li>Maintain and promptly update your information</li>
+                            <li>Keep your password secure and confidential</li>
+                            <li>Notify us immediately of any unauthorized access to your account</li>
+                            <li>Accept responsibility for all activities that occur under your account</li>
+                        </ul>
+                        
+                        <p>We reserve the right to disable any user account if we believe you have violated these Terms or if we determine that your account information is not accurate, current, or complete.</p>
+                    </div>
+
+                    <div id="terms-conduct">
+                        <h2 class="section-title">User Conduct</h2>
+                        <p>By using our Services, you agree not to:</p>
+                        <ul class="policy-list">
+                            <li>Use our Services in any way that violates any applicable law or regulation</li>
+                            <li>Create multiple accounts to manipulate queue positions or gain unfair advantages</li>
+                            <li>Use automated systems or software to extract data from our Services</li>
+                            <li>Attempt to gain unauthorized access to any portion of our Services or any other systems or networks</li>
+                            <li>Interfere with or disrupt the operation of our Services or servers</li>
+                            <li>Transmit any viruses, malware, or other harmful code</li>
+                            <li>Harass, abuse, or harm another person</li>
+                            <li>Submit false or misleading information</li>
+                            <li>Impersonate or misrepresent your affiliation with any person or entity</li>
+                        </ul>
+                    </div>
+
+                    <div id="terms-intellectual">
+                        <h2 class="section-title">Intellectual Property</h2>
+                        <p>Our Services and their entire contents, features, and functionality (including but not limited to all information, software, text, displays, images, video, and audio) are owned by Smart Queue, its licensors, or other providers and are protected by copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.</p>
+                        
+                        <h3 class="section-subtitle">License to Use</h3>
+                        <p>Subject to these Terms, we grant you a limited, non-exclusive, non-transferable, revocable license to access and use our Services for your personal, non-commercial use.</p>
+                        
+                        <h3 class="section-subtitle">Restrictions</h3>
+                        <p>You may not:</p>
+                        <ul class="policy-list">
+                            <li>Reproduce, distribute, modify, create derivative works of, publicly display, publicly perform, republish, download, store, or transmit any of the material on our Services</li>
+                            <li>Use any illustrations, photographs, video or audio sequences, or any graphics separately from the accompanying text</li>
+                            <li>Delete or alter any copyright, trademark, or other proprietary rights notices</li>
+                            <li>Access or use for any commercial purposes any part of our Services</li>
+                        </ul>
+                    </div>
+
+                    <div id="terms-disclaimer">
+                        <h2 class="section-title">Disclaimers and Limitations</h2>
+                        <p><strong>Disclaimer of Warranties:</strong> Our Services are provided on an "as is" and "as available" basis, without any warranties of any kind, either express or implied. We disclaim all warranties, including but not limited to implied warranties of merchantability, fitness for a particular purpose, and non-infringement.</p>
+                        
+                        <p><strong>Limitation of Liability:</strong> To the fullest extent permitted by applicable law, in no event will Smart Queue or its affiliates, service providers, employees, agents, officers, or directors be liable for any indirect, special, incidental, consequential, or punitive damages, including but not limited to, personal injury, pain and suffering, emotional distress, loss of revenue, loss of profits, loss of business or anticipated savings, loss of use, loss of goodwill, loss of data, whether caused by tort (including negligence), breach of contract, or otherwise, even if foreseeable.</p>
+                        
+                        <p>Our total liability to you for all claims arising from or related to the Services is limited to the greater of (a) the total amount you paid us to use the Services in the 12 months prior to the action giving rise to liability, or (b) $100.</p>
+                        
+                        <div class="policy-callout">
+                            <p><strong>Note:</strong> Some jurisdictions do not allow the exclusion of certain warranties or the limitation or exclusion of liability for incidental or consequential damages. Accordingly, some of the above limitations may not apply to you.</p>
+                        </div>
+                    </div>
+
+                    <div id="terms-termination">
+                        <h2 class="section-title">Termination</h2>
+                        <p>We may terminate or suspend your access to all or part of our Services, with or without notice, for any conduct that we, in our sole discretion, believe violates these Terms or is harmful to other users of our Services, us, or third parties, or for any other reason.</p>
+                        
+                        <p>You may terminate your use of our Services at any time by discontinuing use or deleting your account (where applicable).</p>
+                        
+                        <p>All provisions of these Terms that by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity, and limitations of liability.</p>
+                    </div>
+
+                    <div id="terms-indemnification">
+                        <h2 class="section-title">Indemnification</h2>
+                        <p>You agree to defend, indemnify, and hold harmless Smart Queue and its officers, directors, employees, contractors, agents, licensors, service providers, subcontractors, and suppliers from and against any claims, liabilities, damages, judgments, awards, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising out of or relating to your violation of these Terms or your use of the Services.</p>
+                    </div>
+
+                    <div id="terms-governing">
+                        <h2 class="section-title">Governing Law</h2>
+                        <p>These Terms and your use of the Services shall be governed by and construed in accordance with the laws of the State of California, without giving effect to any choice or conflict of law provision or rule.</p>
+                        
+                        <p>Any legal suit, action, or proceeding arising out of, or related to, these Terms or the Services shall be instituted exclusively in the federal courts of the United States or the courts of the State of California, although we retain the right to bring any suit, action, or proceeding against you for breach of these Terms in your country of residence or any other relevant country.</p>
+                    </div>
+
+                    <div id="terms-changes">
+                        <h2 class="section-title">Changes to Terms</h2>
+                        <p>We may revise and update these Terms from time to time in our sole discretion. All changes are effective immediately when we post them and apply to all access to and use of the Services thereafter.</p>
+                        
+                        <p>Your continued use of the Services following the posting of revised Terms means that you accept and agree to the changes. You are expected to check this page frequently so you are aware of any changes, as they are binding on you.</p>
+                    </div>
+
+                    <div id="terms-contact">
+                        <h2 class="section-title">Contact Us</h2>
+                        <p>If you have any questions about these Terms of Service, please contact us at:</p>
+                        <p><strong>Email:</strong> <a href="mailto:legal@smartqueue.com">legal@smartqueue.com</a><br>
+                        <strong>Mail:</strong> Smart Queue, Attn: Legal Department, Smart Queue HQ</p>
+                    </div>
+
+                    <p class="last-updated">Last Updated: April 15, 2025</p>
+                </div>
+            </div>
+
+            <!-- Cookie Policy -->
+            <div class="tab-content" id="cookie-policy">
+                <div class="policy-section">
+                    <div class="toc">
+                        <div class="toc-title">Table of Contents</div>
+                        <ul class="toc-list">
+                            <li><a href="#cookie-intro">Introduction</a></li>
+                            <li><a href="#cookie-what">What Are Cookies</a></li>
+                            <li><a href="#cookie-types">Types of Cookies We Use</a></li>
+                            <li><a href="#cookie-purposes">Purposes of Cookies</a></li>
+                            <li><a href="#cookie-third-party">Third-Party Cookies</a></li>
+                            <li><a href="#cookie-control">Cookie Management</a></li>
+                            <li><a href="#cookie-changes">Changes to This Cookie Policy</a></li>
+                            <li><a href="#cookie-contact">Contact Us</a></li>
+                        </ul>
+                    </div>
+
+                    <div id="cookie-intro">
+                        <h2 class="section-title">Introduction</h2>
+                        <p>This Cookie Policy explains how Smart Queue ("we", "us", or "our") uses cookies and similar technologies to recognize you when you visit our website or use our mobile application. It explains what these technologies are and why we use them, as well as your rights to control our use of them.</p>
+                    </div>
+
+                    <div id="cookie-what">
+                        <h2 class="section-title">What Are Cookies</h2>
+                        <p>Cookies are small data files that are placed on your computer or mobile device when you visit a website. Cookies are widely used by website owners to make their websites work, or to work more efficiently, as well as to provide reporting information.</p>
+                        
+                        <p>Cookies set by the website owner (in this case, Smart Queue) are called "first-party cookies." Cookies set by parties other than the website owner are called "third-party cookies." Third-party cookies enable third-party features or functionality to be provided on or through the website (such as advertising, interactive content, and analytics).</p>
+                    </div>
+
+                    <div id="cookie-types">
+                        <h2 class="section-title">Types of Cookies We Use</h2>
+                        <p>We use different types of cookies for various reasons:</p>
+                        
+                        <table class="policy-table">
+                            <thead>
+                                <tr>
+                                    <th>Type of Cookie</th>
+                                    <th>Description</th>
+                                    <th>Duration</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Essential Cookies</strong></td>
+                                    <td>These cookies are necessary for the website to function and cannot be switched off in our systems. They are usually only set in response to actions made by you which amount to a request for services, such as logging in or filling in forms.</td>
+                                    <td>Session / Persistent</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Performance Cookies</strong></td>
+                                    <td>These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site. They help us to know which pages are the most and least popular and see how visitors move around the site.</td>
+                                    <td>Persistent</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Functionality Cookies</strong></td>
+                                    <td>These cookies enable the website to provide enhanced functionality and personalization. They may be set by us or by third-party providers whose services we have added to our pages.</td>
+                                    <td>Persistent</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Targeting Cookies</strong></td>
+                                    <td>These cookies may be set through our site by our advertising partners. They may be used by those companies to build a profile of your interests and show you relevant advertisements on other sites.</td>
+                                    <td>Persistent</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="cookie-purposes">
+                        <h2 class="section-title">Purposes of Cookies</h2>
+                        <p>We use cookies for several purposes, including to:</p>
+                        <ul class="policy-list">
+                            <li><strong>Authenticate Users:</strong> We use cookies to identify you when you visit our website and as you navigate our website, and to help us determine if you are logged in.</li>
+                            <li><strong>Remember Preferences:</strong> We use cookies to store information about your preferences and to personalize the website for you.</li>
+                            <li><strong>Security:</strong> We use cookies as an element of the security measures used to protect user accounts, including preventing fraudulent use of login credentials.</li>
+                            <li><strong>Analytics:</strong> We use cookies to help us analyze the use and performance of our website and services.</li>
+                            <li><strong>Queue Management:</strong> We use cookies to maintain your queue position and to provide you with real-time updates.</li>
+                        </ul>
+                    </div>
+
+                    <div id="cookie-third-party">
+                        <h2 class="section-title">Third-Party Cookies</h2>
+                        <p>In addition to our own cookies, we may also use various third-party cookies to report usage statistics of the service, deliver advertisements on and through the service, and so on.</p>
+                        
+                        <h3 class="section-subtitle">Third-Party Services We Use</h3>
+                        <ul class="policy-list">
+                            <li><strong>Google Analytics:</strong> Web analytics service that tracks and reports website traffic.</li>
+                            <li><strong>Facebook Pixel:</strong> An analytics tool that allows us to measure the effectiveness of our advertising by understanding the actions people take on our website.</li>
+                            <li><strong>Intercom:</strong> A messaging platform that we use to communicate with our users.</li>
+                            <li><strong>Stripe:</strong> Payment processing service (for businesses using our premium services).</li>
+                        </ul>
+                    </div>
+
+                    <div id="cookie-control">
+                        <h2 class="section-title">Cookie Management</h2>
+                        <p>Most web browsers allow you to control cookies through their settings preferences. However, if you limit the ability of websites to set cookies, you may impair your overall user experience, as it will no longer be personalized to you.</p>
+                        
+                        <h3 class="section-subtitle">How to Manage Cookies</h3>
+                        <p>You can manage your cookie preferences in several ways:</p>
+                        <ul class="policy-list">
+                            <li><strong>Browser Settings:</strong> Most browsers allow you to refuse to accept cookies and to delete cookies. The methods for doing so vary from browser to browser and from version to version.</li>
+                            <li><strong>Opt-Out Pages:</strong> You can opt out of some third-party cookies directly through the privacy policies of the respective third-party service providers.</li>
+                            <li><strong>Cookie Banner:</strong> We provide a cookie consent banner when you first visit our website, allowing you to accept or reject non-essential cookies.</li>
+                        </ul>
+                        
+                        <div class="policy-callout">
+                            <p><strong>Note:</strong> Blocking all cookies will have a negative impact upon the usability of many websites. If you block cookies, you will not be able to use all the features on our website, including the queue management functionality.</p>
+                        </div>
+                    </div>
+
+                    <div id="cookie-changes">
+                        <h2 class="section-title">Changes to This Cookie Policy</h2>
+                        <p>We may update this Cookie Policy from time to time in order to reflect, for example, changes to the cookies we use or for other operational, legal, or regulatory reasons. Please therefore re-visit this Cookie Policy regularly to stay informed about our use of cookies and related technologies.</p>
+                        
+                        <p>The date at the bottom of this Cookie Policy indicates when it was last updated.</p>
+                    </div>
+
+                    <div id="cookie-contact">
+                        <h2 class="section-title">Contact Us</h2>
+                        <p>If you have any questions about our use of cookies or other technologies, please contact us at:</p>
+                        <p><strong>Email:</strong> <a href="mailto:privacy@smartqueue.com">privacy@smartqueue.com</a><br>
+                        <strong>Mail:</strong> Smart Queue, Attn: Privacy Officer, Smart Queue HQ</p>
+                    </div>
+
+                    <p class="last-updated">Last Updated: April 15, 2025</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <!-- Top section - Description and social links -->
+            <p class="footer-description text-center">Making waiting a thing of the past with our innovative queue management solution.</p>
+            
+            <div class="social-links-container">
+                <div class="social-links">
+                    <a href="https://www.facebook.com/SmartQueueOfficial" target="_blank" rel="noopener" aria-label="Facebook" class="social-link facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    
+                    <a href="https://www.x.com/SmartQueueOfficial" target="_blank" rel="noopener" aria-label="X" class="social-link Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    
+                    <a href="https://www.instagram.com/SmartQueueOfficial" target="_blank" rel="noopener" aria-label="Instagram" class="social-link instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    
+                    <a href="https://www.linkedin.com/company/SmartQueueOfficial" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-link linkedin">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Main footer content - Three columns -->
+            <div class="footer-content">
+                <!-- Left column - Logo -->
+                <div class="footer-column footer-logo-column">
+                    <div class="footer-logo">
+                        <span class="logo-text">
+                            <a href="guest.html">
+                            <span class="logo-blue">Smart</span><span class="logo-amber">Queue</span>
+                        </a></span>
+                    </div>
+                </div>
+                
+                <!-- Middle column - Links -->
+                <div class="footer-column footer-links-column">
+                    <ul class="footer-nav-list">
+                        <li><a href="guest.html#about-us" class="footer-nav-link">About Us</a></li>
+                        <li><a href="guest.html#features" class="footer-nav-link">Features</a></li>
+                        <li><a href="guest.html#faq" class="footer-nav-link">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Right column - Contact -->
+                <div class="footer-column footer-contact-column">
+                    <div class="contact-list">
+                        <a href="mailto:support@smartqueue.com" class="contact-item">
+                            <i class="fas fa-envelope contact-icon"></i>
+                            <span>support@smartqueue.com</span>
+                        </a>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-phone contact-icon"></i>
+                            <span>+1 (234) 567-8900</span>
+                        </div>
+                        
+                        <a href="https://www.google.com/maps/place/%D8%AC%D8%A7%D9%85%D8%B9%D8%A9+%D8%A3%D8%B3%D9%83%D8%AF%D8%A7%D8%B1%E2%80%AD/@41.0249642,29.0388276,17z/data=!3m1!4b1!4m6!3m5!1s0x14cab7e4b9b96af1:0x78ef20ea9ab0de2a!8m2!3d41.0249642!4d29.0388276!16s%2Fg%2F15dqchld?entry=ttu&g_ep=EgoyMDI1MDQyMy4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="contact-item">
+                            <i class="fas fa-map-marker-alt contact-icon"></i>
+                            <span>Smart Queue HQ</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom section - Copyright and links -->
+            <div class="footer-bottom">
+                <div class="copyright">
+                    &copy; 2025 Smart Queue. All rights reserved.
+                </div>
+                <div class="footer-links">
+                    <a href="#privacy-policy" class="footer-link policy-link" data-policy="privacy-policy">Privacy Policy</a>
+                    <a href="#terms-of-service" class="footer-link policy-link" data-policy="terms-of-service">Terms of Service</a>
+                    <a href="#cookie-policy" class="footer-link policy-link" data-policy="cookie-policy">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
