@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Queue - Customer Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="customer.js">
+</head>
+<style>
+     /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            background-color: #f9fafb;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        /* Layout */
+        .min-h-screen {
+            min-height: 100vh;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .flex-col {
+            flex-direction: column;
+        }
+        
+        .flex-1 {
+            flex: 1;
+        }
+        
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            border-bottom: 1px solid #e5e7eb;
+            z-index: 10;
+        }
+        
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            width: 100%;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .logo-blue {
+            color: #2563eb;
+        }
+        
+        .logo-amber {
+            color: #f59e0b;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .notification-btn {
+            position: relative;
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+        }
+        
+        .user-btn {
+            display: flex;
+            align-items: center;
+            background: none;
+            border: none;
+            color: #4b5563;
+            cursor: pointer;
+        }
+        
+        .user-avatar {
+            width: 2rem;
+            height: 2rem;
+            background-color: #2563eb;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.5rem;
+        }
+        
+        .user-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: none;
+        }
+        
+        @media (min-width: 768px) {
+            .user-name {
+                display: block;
+            }
+        }
+        
+        /* Main Content Layout */
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+        
+        /* Sidebar */
+        aside {
+            width: 4rem;
+            background-color: white;
+            border-right: 1px solid #e5e7eb;
+        }
+        
+        @media (min-width: 768px) {
+            aside {
+                width: 16rem;
+            }
+        }
+        
+        .sidebar-container {
+            padding: 1rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .nav-menu {
+            margin-bottom: 1rem;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            margin-bottom: 0.25rem;
+            color: #4b5563;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            background: none;
+            border: none;
+            text-align: left;
+        }
+        
+        .nav-item:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .nav-item.active {
+            background-color: #eff6ff;
+            color: #2563eb;
+        }
+        
+        .nav-icon {
+            margin-right: 1rem;
+            min-width: 1.25rem;
+        }
+        
+        .nav-text {
+            display: none;
+        }
+        
+        @media (min-width: 768px) {
+            .nav-text {
+                display: block;
+            }
+        }
+        
+        .notification-badge {
+            margin-left: auto;
+            background-color: #ef4444;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.1rem 0.5rem;
+            border-radius: 9999px;
+            display: none;
+        }
+        
+        @media (min-width: 768px) {
+            .notification-badge {
+                display: block;
+            }
+        }
+        
+        .logout-container {
+            margin-top: auto;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 1rem;
+        }
+        
+        /* Main Content Area */
+        main {
+            flex: 1;
+            overflow: auto;
+            padding: 1.5rem;
+        }
+        
+        .dashboard-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (min-width: 640px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-content {
+            padding: 1.25rem;
+        }
+        
+        .stat-icon-wrapper {
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-icon {
+            flex-shrink: 0;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.25rem;
+        }
+        
+        .stat-icon.blue {
+            background-color: #dbeafe;
+        }
+        
+        .stat-icon.blue i {
+            color: #2563eb;
+        }
+        
+        .stat-icon.green {
+            background-color: #d1fae5;
+        }
+        
+        .stat-icon.green i {
+            color: #059669;
+        }
+        
+        .stat-icon.amber {
+            background-color: #fef3c7;
+        }
+        
+        .stat-icon.amber i {
+            color: #d97706;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+        }
+        
+        .stat-footer {
+            background-color: #f9fafb;
+            padding: 0.75rem 1.25rem;
+        }
+        
+        .stat-footer-text {
+            font-size: 0.875rem;
+        }
+        
+        .stat-footer-link {
+            color: #2563eb;
+            font-weight: 500;
+        }
+        
+        .stat-footer-link:hover {
+            color: #1d4ed8;
+        }
+        
+        /* Content Panels */
+        .panels-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (min-width: 1024px) {
+            .panels-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .panel {
+            background-color: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .panel-title {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .panel-link {
+            font-size: 0.875rem;
+            color: #2563eb;
+        }
+        
+        .panel-link:hover {
+            color: #1d4ed8;
+        }
+        
+        .panel-body {
+            padding: 1.5rem;
+        }
+        
+        .panel-empty {
+            padding: 1.5rem;
+            text-align: center;
+            color: #6b7280;
+        }
+        
+        /* Appointment Card */
+        .appointment-card {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .appointment-header {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .appointment-business {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .appointment-service {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .appointment-date {
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+        
+        .appointment-date i {
+            margin-right: 0.375rem;
+            color: #9ca3af;
+        }
+        
+        .appointment-token {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.625rem;
+            background-color: #dbeafe;
+            color: #1e40af;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 9999px;
+        }
+        
+        .appointment-action {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #ef4444;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .appointment-action:hover {
+            color: #dc2626;
+        }
+        
+        /* Queue History Card */
+        .history-card {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .history-business {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .history-service {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .history-date {
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+        
+        .history-date i {
+            margin-right: 0.375rem;
+            color: #9ca3af;
+        }
+        
+        .history-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.625rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .history-status.completed {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        
+        .history-status.cancelled {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        
+        .history-wait {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .star-rating {
+            display: flex;
+            margin-top: 0.25rem;
+        }
+        
+        .star {
+            color: #f59e0b;
+            font-size: 1rem;
+        }
+        
+        .star.empty {
+            color: #d1d5db;
+        }
+        
+        /* Favorite Businesses Section */
+        .favorites-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .favorites-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .favorites-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .favorite-card {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: box-shadow 0.2s;
+        }
+        
+        .favorite-card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .favorite-content {
+            padding: 1.25rem;
+        }
+        
+        .favorite-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .favorite-name {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .favorite-type {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
+        .favorite-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.625rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .favorite-status.open {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        
+        .favorite-status.closed {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+        
+        .favorite-details {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .favorite-metrics {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .favorite-metric {
+            display: flex;
+            align-items: center;
+        }
+        
+        .favorite-metric i {
+            margin-right: 0.375rem;
+            color: #9ca3af;
+        }
+        
+        .favorite-metric + .favorite-metric {
+            margin-top: 0.25rem;
+        }
+        
+        .bookmark-btn {
+            color: #9ca3af;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .bookmark-btn i {
+            font-size: 1rem;
+        }
+        
+        .favorite-footer {
+            border-top: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+            padding: 0.75rem 1.25rem;
+        }
+        
+        .join-queue-link {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+        }
+        
+        .join-queue-link i {
+            margin-left: 0.25rem;
+        }
+        
+        .join-queue-link:hover {
+            color: #1d4ed8;
+        }
+        
+        /* Additional tabs (hidden by default) */
+        #appointments-content, #history-content, #favorites-content, #notifications-content, #settings-content {
+            display: none;
+        }
+        
+        /* Appointments Tab */
+        .appointments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .schedule-btn {
+            display: flex;
+            align-items: center;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-right: 10px;
+        }
+        
+        .schedule-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .schedule-btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+           
+            color: white;
+            border: none;
+            background-color: #808080;
+            border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover{
+            background-color: #484848;
+        }
+
+        .favorite-metric {
+            margin-bottom: 16px;
+        }
+        
+        .appointments-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .appointments-table th {
+            padding: 0.75rem 1.5rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            background-color: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .appointments-table td {
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            color: #111827;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+        
+        .appointments-table .action-link {
+            font-size: 0.875rem;
+            margin-right: 1rem;
+        }
+        
+        .appointments-table .edit-link {
+            color: #2563eb;
+        }
+        
+        .appointments-table .edit-link:hover {
+            color: #1d4ed8;
+        }
+        
+        .appointments-table .cancel-link {
+            color: #ef4444;
+        }
+        
+        .appointments-table .cancel-link:hover {
+            color: #dc2626;
+        }
+        
+        
+        /* Empty state for appointments */
+        .empty-appointments {
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+        }
+        
+        .empty-text {
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+        
+        /* History Tab */
+        .history-search {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-container {
+            position: relative;
+            width: 16rem;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.5rem 0.5rem 0.5rem 2.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            outline: none;
+        }
+        
+        .search-input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .history-table th {
+            padding: 0.75rem 1.5rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            background-color: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .history-table td {
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            color: #111827;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .history-table .status-pill {
+            display: inline-flex;
+            padding: 0.25rem 0.625rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .history-table .status-pill.completed {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        
+        .history-table .status-pill.cancelled {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        
+        .leave-feedback {
+            color: #2563eb;
+            font-size: 0.875rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .leave-feedback:hover {
+            color: #1d4ed8;
+        }
+        
+        /* Favorites Tab */
+        .favorites-search {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Settings Tab */
+        .settings-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .settings-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+        }
+        
+        .settings-title {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .settings-form {
+            padding: 1.5rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem 1rem;
+        }
+        
+        @media (min-width: 640px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .col-span-2 {
+            grid-column: span 1;
+        }
+        
+        @media (min-width: 640px) {
+            .col-span-2 {
+                grid-column: span 2;
+            }
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+        
+        .form-actions {
+            padding: 0.75rem 1.5rem;
+            background-color: #f9fafb;
+            text-align: right;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .save-btn {
+            display: inline-flex;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .save-btn:hover {
+            background-color: #1d4ed8;
+        }
+        
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .toggle-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .toggle-description {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 3rem;
+            height: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e7eb;
+            transition: .4s;
+            border-radius: 9999px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 1.25rem;
+            width: 1.25rem;
+            left: 0.125rem;
+            bottom: 0.125rem;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #2563eb;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(1.5rem);
+        }
+
+        .slider-container {
+            scroll-behavior: smooth;     /* Smooth scrolling for the slider */
+        }
+        .relative {
+    position: relative;
+}
+    
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 110%;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 0.5rem 0;
+        min-width: 10rem;
+        flex-direction: column;
+        z-index: 100;
+        
+    }
+    
+    .dropdown-menu button {
+        background: none;
+        border: none;
+        padding: 8px 0;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+    }
+
+    .dropdown-item {
+    padding: 0.5rem 1rem;
+    background: none;
+    border: none;
+    text-align: center !important;
+    font-size: 0.875rem;
+    color: #374151;
+    cursor: pointer;
+    width: 100%;
+}
+
+.dropdown-item:hover {
+    background-color: #f9fafb;
+}
+    
+    .popup {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 200;
+    }
+    
+    .popup-content {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        width: 300px;
+    }
+    
+    .popup-content label {
+        display: block;
+        margin-bottom: 10px;
+    }
+    
+    .password-field {
+        position: relative;
+    }
+    
+    .password-field input {
+        flex: 1;
+    }
+    
+    .password-field i {
+        margin-left: 10px;
+    }
+    
+    .show {
+        display: flex !important;
+    }
+    .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    pointer-events: auto;
+}
+
+.modal {
+    position: relative;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    max-width: 28rem;
+    max-height: 90vh;
+    overflow-y: auto;
+    z-index: 10000; /* Higher z-index than the overlay */
+    pointer-events: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-title {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #111827;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: #111827;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+.btn-cancel {
+    background-color: white;
+    border: 1px solid #d1d5db;
+    color: #4b5563;
+}
+
+.btn-cancel:hover {
+    background-color: #f9fafb;
+}
+
+.show {
+    display: flex !important;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+}
+
+/* Make sure these styles are not being overridden */
+.relative {
+    position: relative !important;
+}
+
+.dropdown-menu {
+    position: absolute !important;
+    right: 0 !important;
+    top: 110% !important;
+    z-index: 100 !important;
+}
+
+.password-field {
+    position: relative !important;
+}
+</style>
+<body>
+    <div class="min-h-screen bg-gray-50 flex flex-col">
+        <!-- Header -->
+        <header>
+            <div class="header-container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem; width: 100%;">
+                <a href="guest.html" class="logo">
+                    <span class="logo-text"><span class="logo-blue">Smart</span><span class="logo-amber">Queue</span></span>
+                </a>
+        
+                <div class="user-menu">
+                    <button class="notification-btn" id="notificationBtn">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <div class="relative">
+                        <button class="user-btn" id="userDropdownBtn">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <span class="user-name">John Smith</span>
+                            <i class="fas fa-chevron-down ml-1"></i>
+                        </button>
+                        <div class="dropdown-menu" id="dropdownMenu">
+                            <button class="dropdown-item" id="profileBtn">Profile</button>
+                            <button class="dropdown-item" id="logoutBtn">Log Out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+<!-- Profile Popup -->
+<div class="modal-overlay" id="profilePopup" style="display: none;">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Customer Details</h3>
+            <button class="modal-close" onclick="closePopup('profilePopup')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group"><label class="form-label">Name</label><input class="form-input" type="text" value="John Smith" readonly></div>
+            <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" value="john@example.com" readonly></div>
+            <div class="form-group"><label class="form-label">Role</label><input class="form-input" type="text" value="Customer" readonly></div>
+            <div class="form-group"><label class="form-label">Password</label>
+                <div class="password-field">
+                    <input class="form-input" type="password" value="password123" id="passwordField" readonly>
+                    <i class="fas fa-eye" id="togglePassword" style="cursor: pointer; margin-left: -2rem; margin-top: 1.2rem; position: absolute;"></i>
+                </div>
+            </div>
+            <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="text" value="+123456789" readonly></div>
+        </div>
+    </div>
+</div>
+
+<!-- Logout Confirmation Popup -->
+<div class="modal-overlay" id="logoutPopup" style="display: none;">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Confirm Logout</h3>
+            <button class="modal-close" onclick="closePopup('logoutPopup')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to log out?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" onclick="logout()">Log Out</button>
+            <button class="btn btn-cancel" onclick="closePopup('logoutPopup')">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Notification Popup -->
+<div class="modal-overlay" id="notificationPopup" style="display: none;">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Notifications</h3>
+            <button type="button" class="modal-close" onclick="closePopup('notificationPopup')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 10px;">✅ Your upcoming appointment is tomorrow.</li>
+                <li style="margin-bottom: 10px;">⚠️ Wait time has been updated for your appointment.</li>
+                <li style="margin-bottom: 10px;">📅 Your appointment has been confirmed.</li>
+                <li style="margin-bottom: 10px;">✉️ New promotion available at City Salon.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+        
+            
+
+        <!-- Main Content -->
+        <div class="main-container">
+            <!-- Sidebar -->
+            <aside>
+                <div class="sidebar-container">
+                    <div class="nav-menu">
+                        <button class="nav-item active" id="dashboard-nav">
+                            <i class="fas fa-clipboard-list nav-icon"></i>
+                            <span class="nav-text">Dashboard</span>
+                        </button>
+                        
+                        <button class="nav-item" id="appointments-nav">
+                            <i class="fas fa-calendar nav-icon"></i>
+                            <span class="nav-text">Appointments</span>
+                        </button>
+                        
+                        <button class="nav-item" id="history-nav">
+                            <i class="fas fa-clock nav-icon"></i>
+                            <span class="nav-text">Queue History</span>
+                        </button>
+                        
+                        <button class="nav-item" id="favorites-nav">
+                            <i class="fas fa-bookmark nav-icon"></i>
+                            <span class="nav-text">Favorites</span>
+                        </button>
+                        
+                        <button class="nav-item" id="notifications-nav">
+                            <i class="fas fa-bell nav-icon"></i>
+                            <span class="nav-text">Notifications</span>
+                            <span class="notification-badge">2</span>
+                        </button>
+                        
+                        <button class="nav-item" id="settings-nav">
+                            <i class="fas fa-cog nav-icon"></i>
+                            <span class="nav-text">Settings</span>
+                        </button>
+                    </div>
+                    
+                    <div class="logout-container">
+                        <button class="nav-item">
+                            <i class="fas fa-sign-out-alt nav-icon"></i>
+                            <span class="nav-text">Log Out</span>
+                        </button>
+                    </div>
+                    <div class="modal-overlay" id="logoutPopup" style="display: none;">
+                        <div class="modal">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Confirm Logout</h3>
+                                <button type="button" class="modal-close" onclick="closePopup('logoutPopup')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to log out?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" onclick="logout()">Log Out</button>
+                                <button class="btn btn-cancel" onclick="closePopup('logoutPopup')">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main>
+                <!-- Dashboard Tab (default visible) -->
+                <div id="dashboard-content">
+                    <h1 class="dashboard-title">Customer Dashboard</h1>
+                    
+                    <!-- Stats Overview -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <div class="stat-icon-wrapper">
+                                    <div class="stat-icon blue">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div>
+                                        <p class="stat-label">Total Visits</p>
+                                        <p class="stat-value">3</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <div class="stat-icon-wrapper">
+                                    <div class="stat-icon green">
+                                        <i class="fas fa-calendar"></i>
+                                    </div>
+                                    <div>
+                                        <p class="stat-label">Upcoming</p>
+                                        <p class="stat-value">2</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <div class="stat-icon-wrapper">
+                                    <div class="stat-icon amber">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div>
+                                        <p class="stat-label">Avg. Wait Time</p>
+                                        <p class="stat-value">15 min</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="panels-grid">
+                        <!-- Upcoming Appointments -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h3 class="panel-title">Upcoming Appointments</h3>
+                                <a href="#" class="panel-link" id="view-all-appointments">View All</a>
+                            </div>
+                            <div class="panel-body">
+                                <div class="appointment-card">
+                                    <div class="appointment-header">
+                                        <div>
+                                            <h4 class="appointment-business">City Salon</h4>
+                                            <p class="appointment-service">Hair Coloring</p>
+                                            <div class="appointment-date">
+                                                <i class="fas fa-calendar"></i>
+                                                <span>April 25, 2025 at 2:00 PM</span>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="appointment-token">#A-123</span>
+                                            <button class="appointment-action">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="appointment-card">
+                                    <div class="appointment-header">
+                                        <div>
+                                            <h4 class="appointment-business">Dental Clinic</h4>
+                                            <p class="appointment-service">Teeth Cleaning</p>
+                                            <div class="appointment-date">
+                                                <i class="fas fa-calendar"></i>
+                                                <span>May 3, 2025 at 9:15 AM</span>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="appointment-token">#B-456</span>
+                                            <button class="appointment-action">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Recent Queue History -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h3 class="panel-title">Recent Queue History</h3>
+                                <a href="#" class="panel-link" id="view-all-history">View All</a>
+                            </div>
+                            <div class="panel-body">
+                                <div class="history-card">
+                                    <div class="history-header">
+                                        <div>
+                                            <h4 class="history-business">City Salon</h4>
+                                            <p class="history-service">Haircut</p>
+                                            <div class="history-date">
+                                                <i class="fas fa-calendar"></i>
+                                                <span>April 20, 2025 at 10:30 AM</span>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="history-status completed">Completed</span>
+                                            <p class="history-wait">Wait: 15 min</p>
+                                            <div class="star-rating">
+                                                <i class="fas fa-star star"></i>
+                                                <i class="fas fa-star star"></i>
+                                                <i class="fas fa-star star"></i>
+                                                <i class="fas fa-star star"></i>
+                                                <i class="fas fa-star star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="history-card">
+                                    <div class="history-header">
+                                        <div>
+                                            <h4 class="history-business">Metro Clinic</h4>
+                                            <p class="history-service">Check-up</p>
+                                            <div class="history-date">
+                                                <i class="fas fa-calendar"></i>
+                                                <span>April 18, 2025 at 2:15 PM</span>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="history-status completed">Completed</span>
+                                            <p class="history-wait">Wait: 22 min</p>
+                                            <div class="star-rating">
+                                                <i class="fas fa-star star"></i>
+                                                <i class="fas fa-star star"></i>
+                                                <i class="fas fa-star star"></i>
+                                                <i class="fas fa-star star"></i>
+                                                <i class="fas fa-star star empty"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Favorite Businesses -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">Favorite Businesses</h3>
+                        </div>
+                        <div class="favorites-grid">
+                            <div class="favorite-card">
+                                <div class="favorite-content">
+                                    <div class="favorite-header">
+                                        <div>
+                                            <h4 class="favorite-name">City Salon</h4>
+                                            <p class="favorite-type">Salon</p>
+                                        </div>
+                                        <span class="favorite-status open">Open</span>
+                                    </div>
+                                    <div class="favorite-details">
+                                        <div class="favorite-metrics">
+                                            <div class="favorite-metric">
+                                                <i class="fas fa-clock"></i>
+                                                <span>~15 min wait</span>
+                                            </div>
+                                            <div class="favorite-metric">
+                                                <i class="fas fa-calendar"></i>
+                                                <span>Last visit: April 20, 2025</span>
+                                            </div>
+                                        </div>
+                                        <button class="bookmark-btn">
+                                            <i class="fas fa-bookmark"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="favorite-card">
+                                <div class="favorite-content">
+                                    <div class="favorite-header">
+                                        <div>
+                                            <h4 class="favorite-name">Metro Clinic</h4>
+                                            <p class="favorite-type">Healthcare</p>
+                                        </div>
+                                        <span class="favorite-status open">Open</span>
+                                    </div>
+                                    <div class="favorite-details">
+                                        <div class="favorite-metrics">
+                                            <div class="favorite-metric">
+                                                <i class="fas fa-clock"></i>
+                                                <span>~20 min wait</span>
+                                            </div>
+                                            <div class="favorite-metric">
+                                                <i class="fas fa-calendar"></i>
+                                                <span>Last visit: April 18, 2025</span>
+                                            </div>
+                                        </div>
+                                        <button class="bookmark-btn">
+                                            <i class="fas fa-bookmark"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                            <div class="favorite-card">
+                                <div class="favorite-content">
+                                    <div class="favorite-header">
+                                        <div>
+                                            <h4 class="favorite-name">Tech Repair Shop</h4>
+                                            <p class="favorite-type">Repair</p>
+                                        </div>
+                                        <span class="favorite-status closed">Closed</span>
+                                    </div>
+                                    <div class="favorite-details">
+                                        <div class="favorite-metrics">
+                                            <div class="favorite-metric">
+                                                <i class="fas fa-clock"></i>
+                                                <span>~30 min wait</span>
+                                            </div>
+                                            <div class="favorite-metric">
+                                                <i class="fas fa-calendar"></i>
+                                                <span>Last visit: April 15, 2025</span>
+                                            </div>
+                                        </div>
+                                        <button class="bookmark-btn">
+                                            <i class="fas fa-bookmark"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Appointments Tab (hidden by default) -->
+                <div id="appointments-content">
+                    <div class="appointments-header">
+                        <h1 class="dashboard-title">Appointments</h1>
+                        <button class="schedule-btn">
+                            <i class="fas fa-calendar"></i>
+                            Schedule New
+                        </button>
+                    </div>
+                    
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">Upcoming Appointments</h3>
+                        </div>
+                        <table class="appointments-table">
+                            <thead>
+                                <tr>
+                                    <th>Business</th>
+                                    <th>Service</th>
+                                    <th>Date & Time</th>
+                                    <th>Confirmation</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>City Salon</td>
+                                    <td>Hair Coloring</td>
+                                    <td>
+                                        <div>April 25, 2025</div>
+                                        <div>2:00 PM</div>
+                                    </td>
+                                    <td><span class="appointment-token">#A-123</span></td>
+                                    <td>
+                                        <a href="#" class="action-link edit-link">Edit</a>
+                                        <a href="#" class="action-link cancel-link">Cancel</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Dental Clinic</td>
+                                    <td>Teeth Cleaning</td>
+                                    <td>
+                                        <div>May 3, 2025</div>
+                                        <div>9:15 AM</div>
+                                    </td>
+                                    <td><span class="appointment-token">#B-456</span></td>
+                                    <td>
+                                        <a href="#" class="action-link edit-link">Edit</a>
+                                        <a href="#" class="action-link cancel-link">Cancel</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Queue History Tab (hidden by default) -->
+                <div id="history-content">
+                    <div class="history-search">
+                        <h1 class="dashboard-title">Queue History</h1>
+                        <div class="search-container">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" placeholder="Search history" class="search-input">
+                        </div>
+                    </div>
+                    
+                    <div class="panel">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Business</th>
+                                    <th>Service</th>
+                                    <th>Date & Time</th>
+                                    <th>Wait Time</th>
+                                    <th>Status</th>
+                                    <th>Feedback</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>City Salon</td>
+                                    <td>Haircut</td>
+                                    <td>
+                                        <div>April 20, 2025</div>
+                                        <div>10:30 AM</div>
+                                    </td>
+                                    <td>15 min</td>
+                                    <td><span class="status-pill completed">Completed</span></td>
+                                    <td>
+                                        <div class="star-rating">
+                                            <i class="fas fa-star star"></i>
+                                            <i class="fas fa-star star"></i>
+                                            <i class="fas fa-star star"></i>
+                                            <i class="fas fa-star star"></i>
+                                            <i class="fas fa-star star"></i>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Metro Clinic</td>
+                                    <td>Check-up</td>
+                                    <td>
+                                        <div>April 18, 2025</div>
+                                        <div>2:15 PM</div>
+                                    </td>
+                                    <td>22 min</td>
+                                    <td><span class="status-pill completed">Completed</span></td>
+                                    <td>
+                                        <div class="star-rating">
+                                            <i class="fas fa-star star"></i>
+                                            <i class="fas fa-star star"></i>
+                                            <i class="fas fa-star star"></i>
+                                            <i class="fas fa-star star"></i>
+                                            <i class="fas fa-star star empty"></i>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Tech Repair Shop</td>
+                                    <td>Phone Repair</td>
+                                    <td>
+                                        <div>April 15, 2025</div>
+                                        <div>11:00 AM</div>
+                                    </td>
+                                    <td>35 min</td>
+                                    <td><span class="status-pill cancelled">Cancelled</span></td>
+                                    <td>
+                                        <span>N/A</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Favorites Tab (hidden by default) -->
+                <div id="favorites-content">
+                    <div class="favorites-search">
+                        <h1 class="dashboard-title">Favorite Businesses</h1>
+                        <div class="search-container">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" placeholder="Search favorites" class="search-input">
+                        </div>
+                    </div>
+                    
+                    <div class="favorites-grid">
+                        <div class="favorite-card">
+                            <div class="favorite-content">
+                                <div class="favorite-header">
+                                    <div>
+                                        <h4 class="favorite-name">City Salon</h4>
+                                        <p class="favorite-type">Salon</p>
+                                    </div>
+                                    <span class="favorite-status open">Open</span>
+                                </div>
+                                <div class="favorite-details">
+                                    <div class="favorite-metrics">
+                                        <div class="favorite-metric">
+                                            <i class="fas fa-clock"></i>
+                                            <span>Average Wait: 15 minutes</span>
+                                        </div>
+                                        
+                                        <div class="favorite-metric">
+                                            <i class="fas fa-calendar"></i>
+                                            <span>Last Visit: April 20, 2025</span>
+                                        </div>
+                                    </div>
+                                    <button class="bookmark-btn">
+                                        <i class="fas fa-bookmark"></i>
+                                    </button>
+                                </div>
+                                <div class="mt-5 flex space-x-3">
+                                    <button class="schedule-btn">
+                                        Join Queue
+                                    </button>
+                                
+                                    <button class="btn">
+                                        Book Appointment
+                                    </button>
+                               
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Add more favorite cards as needed -->
+                    </div>
+                </div>
+                
+                <!-- Notifications Tab (hidden by default) -->
+                <div id="notifications-content">
+                    <div class="appointments-header">
+                        <h1 class="dashboard-title">Notifications</h1>
+                        <button class="btn">
+                            Mark all as read
+                        </button>
+                    </div>
+                    
+                    <!-- Notifications panel content goes here -->
+                     
+                </div>
+                
+                <!-- Settings Tab (hidden by default) -->
+                <div id="settings-content">
+                    <h1 class="dashboard-title">Account Settings</h1>
+                    
+                    <div class="settings-card">
+                        <div class="settings-header">
+                            <h3 class="settings-title">Profile Information</h3>
+                        </div>
+                        <div class="settings-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="first-name" class="form-label">First name</label>
+                                    <input type="text" id="first-name" class="form-input" value="Jane">
+                                </div>
+                                <div class="form-group">
+                                    <label for="last-name" class="form-label">Last name</label>
+                                    <input type="text" id="last-name" class="form-input" value="Doe">
+                                </div>
+                                <div class="form-group col-span-2">
+                                    <label for="email" class="form-label">Email address</label>
+                                    <input type="email" id="email" class="form-input" value="jane.doe@example.com">
+                                </div>
+                                <div class="form-group col-span-2">
+                                    <label for="phone-number" class="form-label">Phone number</label>
+                                    <input type="tel" id="phone-number" class="form-input" value="(555) 987-6543">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="save-btn">Save</button>
+                        </div>
+                    </div>
+                    
+                    <!-- More settings sections go here -->
+                </div>
+            </main>
+        </div>
+    </div>    
+</body>
+</html>
