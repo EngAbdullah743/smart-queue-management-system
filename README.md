@@ -1,6 +1,3 @@
-# smart-queue-management-system
-A Smart Queue Management System (SQMS) for small businesses that delivers real‑time priority adjustments, predictive wait times, SMS/WhatsApp alerts and customer feedback to streamline appointments and walk‑ins.
-
 # Smart Queue Management System
 
 A full-stack Node.js application to manage service queues for multiple user roles (admin, staff, customer, guest). This system provides:
